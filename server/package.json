@@ -17,6 +17,7 @@
     "moment": "^2.27.0",
     "node-fetch": "^2.6.1",
     "redis": "^3.0.2",
+    "redis-server": "^1.2.2",
     "uuid": "^8.3.0",
     "validator": "^13.1.1"
   }
