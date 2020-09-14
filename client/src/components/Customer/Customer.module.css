@@ -1,0 +1,51 @@
+.name{
+    font-size: 60px;
+}
+
+.personalDetails{
+    font-family: 'Varela Round';
+    font-size: 22px;
+    padding: 2%;
+    width: 50%;
+    margin: auto;
+}
+
+.text{
+    font-family: 'Varela Round';
+    
+    font-size: 22px;
+    padding: 2px;
+    text-align: left;
+}
+
+
+.table{
+    width: 60%;
+}
+
+.cubesDiv{
+    display: flex;    
+    color: white;
+    text-shadow: 1px 1px 2px grey;
+}
+
+
+.c84a98c{
+    background-color: #84a98c
+}
+
+.c52796f{
+    background-color: #52796f
+}
+
+.c354f52{
+    background-color: #354f52
+}
+
+.ccad2c5{
+    background-color: #cad2c5
+}
+
+.c2f3e46{
+    background-color:#2f3e46;
+}

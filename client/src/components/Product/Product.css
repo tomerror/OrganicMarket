@@ -1,0 +1,97 @@
+.product {
+    display: inline-block;
+    margin:2%;
+    width:15%;
+    height: 180px;
+}
+
+.product-img{
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.product-name{
+    font-family: 'Varela Round';
+    font-size: 15px;
+    text-align: left;
+}
+
+.product-price{
+    font-family: 'Varela Round';
+    font-size: 13px;
+    display: flex;
+    width: 50%;
+    color: #8e8d8d;
+}
+
+.cart-amount{
+    font-family: 'Varela Round';
+    font-size: 13px;
+    display: flex;
+    width: 50%;
+    direction: rtl;
+}
+
+.cart-status{
+    width:75%;
+    margin: 4%;
+    font-family: 'Varela Round';
+    font-size: 15px;
+}
+
+
+.addRmProduct{
+    display: flex;
+    width: 100%;
+}
+
+.button{
+    background: none;
+    font-size: 18px;
+    font-family: 'Varela Round';
+    border-radius: 15%;
+    border: 1px solid;
+    width: 17%;
+    margin: 2%;
+    outline: none;
+}
+
+.plus{
+    color: #70d470;
+}
+.plus:hover{
+    background-color: #70d470;
+    color: white;
+}
+
+.minus{
+    color: #f36868;
+}
+.minus:hover{
+    background-color: #f36868;
+    color: white;
+}
+
+.product-sale{
+    font-family: 'Varela Round';
+    font-size: 13px;
+    display: flex;
+    width: 50%;
+    color: #f93939;
+    font-weight: bold;
+}
+
+.product-frame{
+    display: inline;
+}
+
+.last-items{
+    width: 100%;
+    font-family: 'Varela Round';
+    font-size: 15px;
+    color: black;
+    background: gold;
+    padding: 1px 0px 1px 0px;
+    font-weight: bold;
+    display: table;
+}

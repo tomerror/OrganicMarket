@@ -1,0 +1,107 @@
+.LeftPanel{
+    background-color: #d8f3dc;
+    width: 45%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+}
+
+.RightPanel{
+    background-color: #2d6a4f;
+    width: 55%;
+    height: 100%;
+    position: fixed;
+    right: 0;
+}
+.form{
+    font-size: 20px;
+    color: #d8f3dc;
+    margin: auto;
+}
+
+.Logo{
+    width: 40%;
+}
+
+.LogoCenter{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -55%);
+}
+
+.LoginCenter{
+    top: 32%;
+    position: relative;
+    width: 35%;
+    margin: auto;
+}
+
+.LoginInput{
+    width: 100%;
+    font-size: 15px;
+    padding: 0.5%;
+    margin: 2px;
+    outline: none;
+    border: 1px solid #d8f3dc;
+    border-radius: 2%;
+    color: #2d6a4f;
+}
+
+.LockIcon{
+    color: #2d6a4f;
+    background-color: #d8f3dc;
+    padding: 1.2%;
+    border-radius: 50%;
+}
+
+.FontColor{
+    color: #d8f3dc;
+}
+
+.Title{
+    color: #d8f3dc;
+    font-size: 24px;
+    font-family: 'Varela Round';
+}
+
+.Header{
+    margin: 2%;
+}
+
+.Checkbox{
+    color: #d8f3dc;
+    display: inline;
+    font-family: 'Varela Round';
+    font-size: 14px;
+}
+
+.Text{
+    color: #a9d1f9;
+    display: inline;
+    font-family: 'Varela Round';
+    font-size: 12px;
+    cursor: default;
+}
+
+.Button{
+    width: 100%;
+    margin: 3% 0px 1% 0px;
+    background-color: #8ac2fb;
+    outline: none;
+    border: none;
+    padding: 1%;
+    font-family: 'Varela Round';
+}
+
+.div{
+    display: flex;
+}
+
+.error{
+    color: #fd6f6f;
+    font-size: 17px;
+    padding: 1%;
+    margin: 1% 0px 3% 0px;
+    font-family: 'Varela Round';
+}

@@ -1,0 +1,10 @@
+.bar{
+    position: fixed;
+    width: 100%;
+    text-align: center;
+    background: #e85d5d;
+    color: white;
+    font-family: 'Varela Round';
+    padding: 3px 0px 3px 0px;
+    top: 10%;
+}

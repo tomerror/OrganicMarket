@@ -1,0 +1,93 @@
+.toolbar {
+  width: 90%;
+  align-self: center;
+  display: flex;
+}
+
+.counter {
+  position: absolute;
+  top: -2px;
+  right: -10%;
+  background: #e63946;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 10px;
+  border-radius: 5px;
+  padding: 3px;
+  min-width: 10px;
+  min-height: 10px;
+}
+
+.cartSection {
+  margin-left: 30px;
+  position: relative;
+}
+
+.number {
+  width: 100%;
+  font-family: "Varela Round";
+  font-size: 15px;
+  color: white;
+  cursor: default;
+}
+
+.toolbarInput {
+  outline: none;
+  border: none;
+  border-radius: 2%;
+  padding: 0px 0% 0px 18%;
+  color: #2d6a4f;
+  font-size: 14px;
+  font-family: "Varela Round";
+  width: 82%;
+  height: 100%;
+}
+
+.tab {
+  font-family: "Varela Round";
+  font-size: 17px;
+  color: white;
+  margin: 13px;
+  cursor: pointer;
+  display: inline;
+}
+
+.tab:hover {
+  color: #aeecb8;
+}
+
+.adminIcon {
+  color: #e63946;
+  font-size: 40px;
+  margin: 1%;
+}
+
+.menuPanelStyle{
+    display: inline-flex;
+    margin: 1%;
+}
+
+.buttonPanelStyle{
+    position: absolute;
+        display: flex;
+        margin-right: 1%;
+        right: 0;
+}
+
+.search{
+    color: rgb(45 106 79);
+        font-size: 200%;
+        position: absolute;
+        margin: 1%;
+        top: 6%;
+        left: 0%;
+        color: #d8f3dc;
+        font-size: 40px;
+        margin: 1%
+}
+
+a{
+  text-decoration: none;
+}

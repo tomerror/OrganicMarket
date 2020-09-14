@@ -1,0 +1,12 @@
+.row{
+    margin: 1%;
+    display: flex;
+    width: 100%;
+    font-family: 'Varela Round';
+    font-size: 15px;
+}
+.cell{
+    text-align: left;
+    width: 25%;
+}
+

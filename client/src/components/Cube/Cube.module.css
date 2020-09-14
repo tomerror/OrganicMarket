@@ -1,0 +1,25 @@
+.cube{
+    font-family: 'Varela Round';
+    width: 30%;
+    padding: 1%;
+    margin: 1%;
+    height: 70px;
+    overflow-wrap: break-word;
+    border-radius: 3%;
+}
+
+.title{
+    font-size: 16px;
+}
+
+.message{
+    font-size: 30px;
+}
+
+.submessage{
+
+}
+
+.frameMessage{
+    top: 15%;
+}

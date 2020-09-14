@@ -1,0 +1,28 @@
+.counter{
+    position: absolute;
+    top: -2px;
+    right: -25%;
+    background: #e63946;
+    Display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 10px;
+    border-radius: 5px;
+    padding: 3px;
+    Min-width: 10px;
+    Min-height: 10px;
+}
+
+.cart-section{
+    position: relative;
+    width: 70%;
+    margin: auto;
+}
+
+.number{
+    width: 100%;
+    font-family: 'Varela Round';
+    font-size: 15px;
+    color: white;
+}

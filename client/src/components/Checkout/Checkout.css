@@ -1,0 +1,64 @@
+.checkout-title{
+    padding: 2%;
+    font-size: x-large;
+    margin-bottom: 1%;
+}
+
+.checkout-details{
+    margin-bottom: 4%;
+}
+
+.checkout{
+    font-family: 'Varela Round';
+    font-size: 16px;
+}
+
+.checkout-bill{
+    width:15%;
+    right: 10%;
+    position: absolute;
+}
+
+.checkout-bill-title{
+    width: 65%;
+}
+
+.checkout-bill-amount{
+}
+
+.checkout-bill-set{
+    display: flex;
+    text-align: left;
+    margin: 1%;
+    padding: 1%;
+}
+
+.total-amount{
+
+}
+
+.checkout-button{
+    margin-top: 4%;
+    width: 100%;
+    height: 35px;
+    background: #009de0;
+    outline: none;
+    border: none;
+    border-radius: 2%;
+    color: white;
+    font-size: 15px;
+    font-family: 'Varela Round';
+}
+
+.checkout-button:hover{
+    background: #28afe8;
+}
+
+.warning{
+    background: gold;
+    padding: 4%;
+}
+
+.warning-message{
+    font-size: 12px;
+}
