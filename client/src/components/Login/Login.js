@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import cookie from 'react-cookies';
 import axios from 'axios';
 import styles from './Login.module.css';
-
 import LockIcon from '@material-ui/icons/Lock';
 import Signin from '../Signin/Signin';
 import Signup from '../Signup/Signup';
@@ -23,7 +22,7 @@ class Login extends Component {
         pastReload: false
     }
 
-    componentWillMount = () => {
+    componentDidMount = () => {
         const user = cookie.load('username')
         const pass = cookie.load('password')
         if ((user != undefined) && (pass != undefined)) {
@@ -36,7 +35,7 @@ class Login extends Component {
         this.clearError();
         this.setState({ form: this.state.form == "Sign in" ? "Sign up" : "Sign in" })
     }
-    
+
     checkSign = (v) => {
         this.setState({ remember: v })
     }

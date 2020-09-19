@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 import Counter from '../Counter/Counter';
 import './Product.css';
 
@@ -38,6 +39,10 @@ const Product = (props) => {
             : null} </div> : null}
         </div>
     )
+}
+
+Product.propTypes = {
+    inCart: PropTypes.number
 }
 
 export default Product;
