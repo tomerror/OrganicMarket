@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Toolbar.module.css';
-import Tabs from '../Tabs/Tabs';
+import Tabs from '../../Tabs/Tabs';
 import ToolbarIcon from '../ToolbarIcon/ToolbarIcon';
 
 import Person from '@material-ui/icons/Person';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import Fingerprint from '@material-ui/icons/Fingerprint';
-import SearchPanel from '../SearchPanel/SearchPanel';
+import SearchPanel from '../../SearchPanel/SearchPanel';
 
 const Toolbar = (props) => {
     const iconStyle = { color: "#d8f3dc", fontSize: "40px", margin: "1%" }

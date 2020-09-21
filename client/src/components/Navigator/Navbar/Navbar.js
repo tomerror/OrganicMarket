@@ -1,5 +1,5 @@
 import React from 'react';
-import Title from '../Title/Title';
+import Title from '../../Title/Title';
 import Toolbar from '../Toolbar/Toolbar';
 import Errorbar from '../Errorbar/Errorbar';
 
