@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Login from '../../components/Login/Login';
-import Shop from '../../components/Shop/Shop';
+import Login from '../Login/Login';
+import Shop from '../Shop/Shop';
 
 class Organic extends Component {
   state = {

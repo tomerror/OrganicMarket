@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Cart from '../Cart/Cart';
+import Cart from '../../components/Cart/Cart';
 import './Checkout.css';
 
 class Checkout extends Component {

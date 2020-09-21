@@ -4,8 +4,8 @@ import cookie from 'react-cookies';
 import styles from './Customer.module.css';
 import axios from 'axios';
 import moment from 'moment';
-import History from '../History/History';
-import Cubes from '../Cubes/Cubes';
+import History from '../../components/History/History';
+import Cubes from '../../components/Cubes/Cubes';
 import utils from '../../utils';
 
 class Customer extends Component {

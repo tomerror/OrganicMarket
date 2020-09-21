@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from '../Login/Login.module.css'
+import styles from '../../containers/Login/Login.module.css'
 
 const LoginFooter = (props) => {
     const [checkboxState, setCheckboxState] = useState({

@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import styles from './Manage.module.css';
 import axios from 'axios';
-import Logger from '../Logger/Logger';
-import Items from '../Items/Items';
-import Dropdown from '../Dropdown/Dropdown';
-import Panel from '../PanelManager/PanelManager';
+import Logger from '../../components/Logger/Logger';
+import Items from '../../components/Items/Items';
+import Panel from '../../components/PanelManager/PanelManager';
 
 class Manage extends Component {
     state = {
