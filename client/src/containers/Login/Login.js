@@ -3,9 +3,7 @@ import cookie from 'react-cookies';
 import axios from 'axios';
 import styles from './Login.module.css';
 import LockIcon from '@material-ui/icons/Lock';
-import Signin from '../../components/Signin/Signin';
-import Signup from '../../components/Signup/Signup';
-import LoginFooter from '../../components/LoginFooter/LoginFooter';
+import { Signin, Signup, LoginFooter } from '../../components';
 import moment from 'moment';
 
 class Login extends Component {

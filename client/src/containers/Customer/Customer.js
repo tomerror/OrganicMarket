@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import cookie from 'react-cookies';
 import styles from './Customer.module.css';
 import axios from 'axios';
 import moment from 'moment';
-import History from '../../components/History/History';
-import Cubes from '../../components/Cubes/Cubes';
+import { Cubes, History } from '../../components';
 import utils from '../../utils';
 
 class Customer extends Component {

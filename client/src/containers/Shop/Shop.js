@@ -3,12 +3,8 @@ import { Route, Redirect } from 'react-router-dom';
 import cookie from 'react-cookies';
 import axios from 'axios';
 import utils from '../../utils';
-import Navbar from '../../components/Navbar/Navbar';
-import Groceries from '../../components/Groceries/Groceries';
-import Checkout from '../Checkout/Checkout';
-import Customer from '../Customer/Customer';
-import Manage from '../Manage/Manage';
-import Readme from '../../components/Readme/Readme';
+import { Navbar, Groceries, Readme } from '../../components';
+import { Checkout, Manage, Customer } from '../../containers';
 import './Shop.css';
 
 class Shop extends Component {
