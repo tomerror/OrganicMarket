@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../Toolbar/Toolbar.module.css';
 
-const ToolbarIcon = (props) => {
+const IconLabel = (props) => {
     return (
         <div className={styles.cartSection}>
             <Link to={props.href}>
@@ -20,4 +20,4 @@ const ToolbarIcon = (props) => {
         </div>
     )
 }
-export default ToolbarIcon;
+export default IconLabel;

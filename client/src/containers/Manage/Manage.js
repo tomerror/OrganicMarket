@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom';
 import styles from './Manage.module.css';
 import axios from 'axios';
 import { Logger, Items, Panel } from '../../components';
+import UserContext from '../../context/user-context';
 
 class Manage extends Component {
     state = {
@@ -12,6 +13,8 @@ class Manage extends Component {
         filterProducts: [],
         redirect: null
     }
+
+    static contextType = UserContext;
 
     componentDidMount = () => {
         this.getPanel();
@@ -23,7 +26,7 @@ class Manage extends Component {
             method: 'post',
             url: 'http://localhost:4000/manage/getPanel',
             headers: {},
-            data: { username: this.props.user.username, password: this.props.user.password }
+            data: { username: this.context.user.username, password: this.context.user.password }
         }).then((response) => {
             this.setState({ logs: response.data, filterLogs: response.data })
             const tabs = []
@@ -44,7 +47,7 @@ class Manage extends Component {
             method: 'post',
             url: 'http://localhost:4000/manage/discount',
             headers: {},
-            data: { username: this.props.user.username, password: this.props.user.password, product: product }
+            data: { username: this.context.user.username, password: this.context.user.password, product: product }
         }).then((response) => {
             this.props.reloadProduct();
             this.updateDiscount(product);
@@ -62,7 +65,7 @@ class Manage extends Component {
             method: 'post',
             url: 'http://localhost:4000/manage/productVisibility',
             headers: {},
-            data: { username: this.props.user.username, password: this.props.user.password, product: product }
+            data: { username: this.context.user.username, password: this.context.user.password, product: product }
         }).then((response) => {
             this.props.reloadProduct();
             this.updateVisibility(product);
@@ -80,7 +83,7 @@ class Manage extends Component {
             method: 'post',
             url: 'http://localhost:4000/manage/supplyInc',
             headers: {},
-            data: { username: this.props.user.username, password: this.props.user.password, product: product.display }
+            data: { username: this.context.user.username, password: this.context.user.password, product: product.display }
         }).then((response) => {
             this.props.reloadProduct();
             this.updateSupply(product.display, 1);
@@ -99,7 +102,7 @@ class Manage extends Component {
                 method: 'post',
                 url: 'http://localhost:4000/manage/supplyDec',
                 headers: {},
-                data: { username: this.props.user.username, password: this.props.user.password, product: product.display }
+                data: { username: this.context.user.username, password: this.context.user.password, product: product.display }
             }).then((response) => {
                 this.props.reloadProduct();
                 this.updateSupply(product.display, -1);

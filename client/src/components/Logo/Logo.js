@@ -1,7 +1,7 @@
 import React from 'react';
-import './Title.css';
+import './Logo.css';
 
-const Title = () => {
+const Logo = () => {
     return (
         <div className="title">
             <img src={require('../../assets/wide4.png')} alt="" className="titleImage"/>
@@ -9,4 +9,4 @@ const Title = () => {
     )
 }
 
-export default Title;
+export default Logo;

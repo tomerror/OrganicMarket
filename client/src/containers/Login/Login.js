@@ -5,6 +5,8 @@ import styles from './Login.module.css';
 import LockIcon from '@material-ui/icons/Lock';
 import { Signin, Signup, LoginFooter } from '../../components';
 import moment from 'moment';
+import UserContext from '../../context/user-context';
+import { Redirect } from 'react-router';
 
 class Login extends Component {
     state = {
@@ -19,6 +21,8 @@ class Login extends Component {
         error: "",
         pastReload: false
     }
+
+    static contextType = UserContext;
 
     componentDidMount = () => {
         const user = cookie.load('username')
@@ -77,8 +81,7 @@ class Login extends Component {
             firstname: this.state.firstname,
             lastname: this.state.lastname,
             email: this.state.email,
-            address: this.state.address,
-            credit: this.state.credit
+            address: this.state.address
         }
         user.admin = 0
         user.creation_date = moment().format("YYYY/MM/DD")
@@ -99,7 +102,7 @@ class Login extends Component {
     };
 
     approvedDetails = (user) => {
-        this.props.setUser(user);
+        this.props.setUser(user)
         if (!this.state.pastReload) {
             if (this.state.remember) {
                 cookie.save('username', user.username, { path: '/' })
@@ -109,6 +112,7 @@ class Login extends Component {
                 cookie.save('username', user.username, { path: '/', maxAge: 60 * 30 })
                 cookie.save('password', user.password, { path: '/', maxAge: 60 * 30 })
             }
+            window.location.href = '/';
         }
     }
 

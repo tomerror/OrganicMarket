@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import CartContext from '../../context/cart-context';
 import { Cart } from '../../components';
 import './Checkout.css';
 
@@ -7,22 +8,23 @@ class Checkout extends Component {
     componentDidMount = () => {
         this.props.viewPage('cart')
     }    
+    static contextType = CartContext;
     
     updateCartCounterInc = (product) => {
-        let updateCart = this.props.cart.items;
+        let updateCart = this.context.items;
         updateCart.filter(x => x.name == product.item.name).map(x => {x.count++; x.supply--})
-        let amount = parseFloat((this.props.cart.amount + product.item.details.weight * (product.item.details.price)).toFixed(2))
+        let amount = parseFloat((this.context.amount + product.item.details.weight * (product.item.details.price)).toFixed(2))
         let cart = {
             amount: amount,
-            count: this.props.cart.count + 1,
+            count: this.context.count + 1,
             items: updateCart,
-            delivery: this.props.cart.delivery
+            delivery: this.context.delivery
         }
         this.props.setCart(cart)
     }
 
     updateCartCounterDec = (product) => {
-        let updateCart = this.props.cart.items;
+        let updateCart = this.context.items;
         let idxProduct = updateCart.findIndex(x => x.name == product.item.name)
         if (idxProduct != -1) {
             if (updateCart[idxProduct].count > 1) {
@@ -31,12 +33,12 @@ class Checkout extends Component {
             } else {
                 updateCart.splice(idxProduct, 1);
             }
-            let amount = parseFloat((this.props.cart.amount - product.item.details.weight * (product.item.details.price - product.item.details.discount*0.1*product.item.details.price)).toFixed(2))
+            let amount = parseFloat((this.context.amount - product.item.details.weight * (product.item.details.price - product.item.details.discount*0.1*product.item.details.price)).toFixed(2))
             let cart = {
                 amount: amount,
-                count: this.props.cart.count - 1,
+                count: this.context.count - 1,
                 items: updateCart,
-                delivery: this.props.cart.delivery
+                delivery: this.context.delivery
             }
             this.props.setCart(cart)
         }
@@ -45,11 +47,11 @@ class Checkout extends Component {
     
     render = () => {
         const products = <Cart
-        cart={this.props.cart}
+        cart={this.context}
         counterInc={(p) => this.updateCartCounterInc(p)}
         counterDec={(p) => this.updateCartCounterDec(p)} />
 
-        const warning = this.props.cart.items.filter(product => product.supply < 0 )
+        const warning = this.context.items.filter(product => product.supply < 0 )
 
         return (
             <div className="checkout">
@@ -57,7 +59,7 @@ class Checkout extends Component {
                     Checkout
                 </div>
                 <div>
-                    {this.props.cart.count == 0 ? <h1>Cart is empty</h1> :
+                    {this.context.count == 0 ? <h1>Cart is empty</h1> :
                         <div>
                             <div>
                                 <div className="checkout-details">
@@ -70,7 +72,7 @@ class Checkout extends Component {
                                         Items total:
                                 </div>
                                     <div className="checkout-bill-amount">
-                                        &#8362; {this.props.cart.amount.toFixed(2)}
+                                        &#8362; {this.context.amount.toFixed(2)}
                                     </div>
                                 </div>
                                 <div className="checkout-bill-set">
@@ -78,7 +80,7 @@ class Checkout extends Component {
                                         Delivery:
                                 </div>
                                     <div className="checkout-bill-amount">
-                                        &#8362; {this.props.cart.delivery}
+                                        &#8362; {this.context.delivery}
                                     </div>
                                 </div>
                                 <hr />
@@ -87,7 +89,7 @@ class Checkout extends Component {
                                         Total sum:
                                 </div>
                                     <div className="checkout-bill-amount total-amount">
-                                        &#8362; {(this.props.cart.amount + this.props.cart.delivery).toFixed(2)}
+                                        &#8362; {(this.context.amount + this.context.delivery).toFixed(2)}
                                     </div>
                                 </div>
                                 { warning.length > 0 ? 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import './App.css';
 import { BrowserRouter } from 'react-router-dom';
+import './App.css';
 import Organic from './Organic/Organic';
 
 class App extends Component {

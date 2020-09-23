@@ -3,9 +3,11 @@ import { Route, Redirect } from 'react-router-dom';
 import cookie from 'react-cookies';
 import axios from 'axios';
 import utils from '../../utils';
-import { Navbar, Groceries, Readme } from '../../components';
+import { Navbar, Groceries, Readme, Sidebar } from '../../components';
 import { Checkout, Manage, Customer } from '../../containers';
 import './Shop.css';
+import UserContext from '../../context/user-context';
+import CartContext from '../../context/cart-context';
 
 class Shop extends Component {
   state = {
@@ -25,26 +27,25 @@ class Shop extends Component {
     redirect: null
   }
 
+  static contextType = UserContext;
+
   componentDidMount = () => {
     this.setState({ page: 'shop' });
     this.retrieveData();
   }
-
-
-
 
   retrieveData = () => {
     this.clearError();
     axios({
       method: 'post',
       url: `http://localhost:4000/data/shop`,
-      data: { username: this.props.user.username, password: this.props.user.password }
+      data: { username: this.context.user.username, password: this.context.user.password }
     })
       .then((response) => {
         this.setState({ products: response.data })
         this.setState({ section: this.state.products.filter((product) => product.type == response.data[0].type) })
-        if (cookie.load(`cart:${this.props.user.username}`) != undefined) {
-          const tempCart = cookie.load(`cart:${this.props.user.username}`)
+        if (cookie.load(`cart:${this.context.user.username}`) != undefined) {
+          const tempCart = cookie.load(`cart:${this.context.user.username}`)
           this.setState({ cart: tempCart })
           this.updateCartOnAdminChanges()
         }
@@ -63,11 +64,11 @@ class Shop extends Component {
       method: 'post',
       url: 'http://localhost:4000/payment/setPayment',
       headers: {},
-      data: { username: this.props.user.username, password: this.props.user.password, cart: this.state.cart }
+      data: { username: this.context.user.username, password: this.context.user.password, cart: this.state.cart }
     }).then((response) => {
       if (response) {
         this.setState({ cart: { amount: 0, count: 0, items: [], delivery: 50 } })
-        cookie.remove(`cart:${this.props.user.username}`, { path: '/' })
+        cookie.remove(`cart:${this.context.user.username}`, { path: '/' })
         this.changeSection(this.state.products[0].type)
       }
     }, (error) => {
@@ -106,13 +107,13 @@ class Shop extends Component {
     })
     this.setState({ cart: cart })
   };
-  
+
   changeSection = (section) => {
     this.setState({ section: this.state.products.filter((product) => product.type == section.toLowerCase()), page: 'shop' })
   }
 
   setCart = (cart) => {
-    cookie.save(`cart:${this.props.user.username}`, JSON.stringify(cart), { path: `/` })
+    cookie.save(`cart:${this.context.user.username}`, JSON.stringify(cart), { path: `/` })
     this.setState({ cart: cart });
   }
 
@@ -158,29 +159,43 @@ class Shop extends Component {
 
     return (
       <div>
-        <Navbar
-          tabs={this.state.tabs}
-          menuFunc={(nav) => this.changeSection(nav)}
-          page={this.state.page}
-          counter={this.state.cart.count}
-          viewPage={(p) => this.viewPage(p)}
-          searchProduct={(e) => this.searchProduct(e)}
-          admin={this.props.user.admin}
-          logout={() => this.logout()}
-          error={this.state.error} />
-
+        <CartContext.Provider value={{
+          amount: this.state.cart.amount,
+          count: this.state.cart.count,
+          items: this.state.cart.items,
+          delivery: this.state.cart.delivery
+        }}>
+          <Navbar
+            tabs={this.state.tabs}
+            menuFunc={(nav) => this.changeSection(nav)}
+            page={this.state.page}
+            viewPage={(p) => this.viewPage(p)}
+            searchProduct={(e) => this.searchProduct(e)}
+            logout={() => this.logout()}
+            error={this.state.error} />
+          <Sidebar tabs={this.state.tabs} />
+          <div className="shop">
+            <Route path="/"
+              exact
+              render={() =>
+                <Groceries products={this.state.section}
+                  cart={this.state.cart}
+                  setCart={(c) => this.setCart(c)} />} />
+            <Route path="/cart"
+              exact
+              render={() =>
+                <Checkout
+                  setCart={(c) => this.setCart(c)}
+                  sendPayment={() => this.sendPayment()}
+                  viewPage={(s) => this.viewPage(s)}
+                />} />
+          </div>
+        </CartContext.Provider>
         <div className="shop">
-          <Route path="/"
-            exact
-            render={() =>
-              <Groceries products={this.state.section}
-                cart={this.state.cart}
-                setCart={(c) => this.setCart(c)} />} />
           <Route path="/manage"
             exact
             render={() =>
               <Manage getPanel={() => this.getPanel()}
-                user={this.props.user}
                 setError={(e) => this.setError(e)}
                 clearError={() => this.clearError()}
                 p={this.state.products}
@@ -188,28 +203,23 @@ class Shop extends Component {
                 reloadProduct={() => this.retrieveData()}
                 viewPage={(s) => this.viewPage(s)}
               />} />
-          <Route path="/cart"
-            exact
-            render={() =>
-              <Checkout
-                cart={this.state.cart}
-                setCart={(c) => this.setCart(c)}
-                sendPayment={() => this.sendPayment()}
-                viewPage={(s) => this.viewPage(s)}
-              />} />
+
           <Route path="/customer"
             exact
             render={() =>
               <Customer
-                user={this.props.user}
                 setError={(e) => this.setError(e)}
                 clearError={() => this.clearError()}
                 viewPage={(s) => this.viewPage(s)} />} />
-          <Route path="/readme" exact render={() => <Readme />} />
+          <Route path="/readme"
+            exact
+            render={() => <Readme />} />
         </div>
       </div>
     )
   }
 }
+
+
 
 export default Shop;

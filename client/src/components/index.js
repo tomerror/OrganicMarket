@@ -1,4 +1,5 @@
 export { default as Navbar } from './Navigator/Navbar/Navbar';
+export { default as Sidebar } from './Navigator/Sidebar/Sidebar';
 export { default as Groceries } from './Groceries/Groceries';
 export { default as Readme } from './Readme/Readme';
 export { default as Cart } from './Cart/Cart';

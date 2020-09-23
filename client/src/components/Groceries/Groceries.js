@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import CartContext from '../../context/cart-context';
 import Products from '../Products/Products';
 import './Groceries.css';
 
 const Groceries = ( props ) => {
+    const cartContext = useContext(CartContext);
     const productExists = (cart, product) => {
         return cart.find(x => x.name == product)
       }
     
     const cartCounterInc = (product) => {
-        let updateCart = props.cart.items;
+        let updateCart = cartContext.items;
         if(!productExists(updateCart, product.name)){
             let setProduct = {
                 "category": product.type,
@@ -28,18 +30,18 @@ const Groceries = ( props ) => {
         else {
             updateCart.filter(x => x.name == product.name).map(x => {x.count++; x.supply--})
         }
-        let amount = parseFloat((props.cart.amount + product.weight * (product.price - product.discount*0.1*product.price)).toFixed(2))
+        let amount = parseFloat((cartContext.amount + product.weight * (product.price - product.discount*0.1*product.price)).toFixed(2))
         let cart = {
             amount: amount,
-            count: props.cart.count + 1,
+            count: cartContext.count + 1,
             items: updateCart,
-            delivery: amount < 50 ? props.cart.delivery : 30
+            delivery: cartContext.delivery
         }
         props.setCart(cart)
     }
 
     const cartCounterDec = (product) => {
-        let updateCart = props.cart.items;
+        let updateCart = cartContext.items;
         let idxProduct = updateCart.findIndex(x=>x.name == product.name)
     
         if(idxProduct != -1){
@@ -49,12 +51,12 @@ const Groceries = ( props ) => {
             } else {
                 updateCart.splice(idxProduct, 1);
             }
-            let amount = parseFloat((props.cart.amount - product.weight * (product.price - product.discount*0.1*product.price)).toFixed(2))
+            let amount = parseFloat((cartContext.amount - product.weight * (product.price - product.discount*0.1*product.price)).toFixed(2))
             let cart = {
                 amount: amount,
-                count: props.cart.count - 1,
+                count: cartContext.count - 1,
                 items: updateCart,
-                delivery: amount > 50 ? props.cart.delivery : 50
+                delivery: cartContext.delivery
             }
             props.setCart(cart)
         }
@@ -62,7 +64,7 @@ const Groceries = ( props ) => {
 
     const products = <Products 
             products = {props.products}
-            cart = {props.cart}
+            cart = {cartContext}
             counterInc={(p) => cartCounterInc(p)}
             counterDec={(p) => cartCounterDec(p)}
         />

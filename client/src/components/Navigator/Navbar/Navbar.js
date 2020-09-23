@@ -1,12 +1,14 @@
-import React from 'react';
-import Title from '../../Title/Title';
+import React, { useContext } from 'react';
+import Title from '../../Logo/Logo';
 import Toolbar from '../Toolbar/Toolbar';
 import Errorbar from '../Errorbar/Errorbar';
+import UserContext from '../../../context/user-context';
 
 import './Navbar.css';
 
 const Navbar = (props) => {
-    const style = [props.admin == 1 ? "admin" : "user", "nav"].join(" ")
+    const userContext = useContext(UserContext);
+    const style = [userContext.user.admin == 1 ? "admin" : "user", "nav"].join(" ")
     const showErrorBar = props.error != '' ? true: false;
     return (
         <div>
@@ -16,10 +18,8 @@ const Navbar = (props) => {
                     tabs={props.tabs}
                     menuFunc={(nav) => props.menuFunc(nav)}
                     page={props.page}
-                    counter={props.counter}
                     viewPage={(p) => props.viewPage(p)}
                     searchProduct={(e) => props.searchProduct(e)}
-                    admin={props.admin}
                     logout={() => props.logout()} />
             </div>
             { showErrorBar ? <Errorbar text={props.error} /> : null }        

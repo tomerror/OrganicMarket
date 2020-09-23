@@ -5,12 +5,15 @@ import axios from 'axios';
 import moment from 'moment';
 import { Cubes, History } from '../../components';
 import utils from '../../utils';
+import UserContext from '../../context/user-context';
 
 class Customer extends Component {
     state = {
         orders: [],
         redirect: null
     }
+
+    static contextType = UserContext;
 
     componentDidMount = () => {
         this.getPayments();
@@ -22,8 +25,7 @@ class Customer extends Component {
             method: 'post',
             url: 'http://localhost:4000/payment/getPayments',
             headers: {},
-            data: { username: this.props.user.username, password: this.props.user.password}
-            //data: { username: cookie.load('username'), password: cookie.load('password') }
+            data: { username: this.context.user.username, password: this.context.user.password }
         }).then((response) => {
             this.setState({ orders: response.data })
             this.props.viewPage('customer')
@@ -42,7 +44,7 @@ class Customer extends Component {
         const cubes = [{
             title: "Member",
             color: styles.ccad2c5,
-            message: moment().diff(this.props.user.creation_date, "days"),
+            message: moment().diff(this.context.user.creation_date, "days"),
             submessage: "Days"
         }, {
             title: "Transactions",
@@ -51,19 +53,19 @@ class Customer extends Component {
         }, {
             title: "Email",
             color: styles.c52796f,
-            message: this.props.user.email.split('@')[0],
-            submessage: '@' + this.props.user.email.split('@')[1]
+            message: this.context.user.email.split('@')[0],
+            submessage: '@' + this.context.user.email.split('@')[1]
         }, {
             title: "Address",
             color: styles.c354f52,
-            message: this.props.user.address.split(',')[0],
-            submessage: this.props.user.address.split(',')[1]
+            message: this.context.user.address.split(',')[0],
+            submessage: this.context.user.address.split(',')[1]
         }]
         return (
             <div>
                 <div className={styles.personalDetails}>
                     <div className={styles.name}>
-                        {utils.capitalize(this.props.user.firstname)} {utils.capitalize(this.props.user.lastname)}
+                        {utils.capitalize(this.context.user.firstname)} {utils.capitalize(this.context.user.lastname)}
                     </div>
                 </div>
                 <div className={styles.cubesDiv}>

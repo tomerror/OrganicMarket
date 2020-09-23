@@ -64,30 +64,32 @@
   margin: 1%;
 }
 
-.menuPanelStyle{
-    display: inline-flex;
-    margin: 1%;
+.menuPanelStyle {
+  display: inline-flex;
+  margin: 1%;
 }
 
-.buttonPanelStyle{
-    position: absolute;
+.buttonPanelStyle {
+  /* position: absolute;
         display: flex;
         margin-right: 1%;
-        right: 0;
+        right: 0; */
+  position: relative;
+  display: flex;
 }
 
-.search{
-    color: rgb(45 106 79);
-        font-size: 200%;
-        position: absolute;
-        margin: 1%;
-        top: 6%;
-        left: 0%;
-        color: #d8f3dc;
-        font-size: 40px;
-        margin: 1%
+.search {
+  color: rgb(45 106 79);
+  font-size: 200%;
+  position: absolute;
+  margin: 1%;
+  top: 6%;
+  left: 0%;
+  color: #d8f3dc;
+  font-size: 40px;
+  margin: 1%;
 }
 
-a{
+a {
   text-decoration: none;
 }
