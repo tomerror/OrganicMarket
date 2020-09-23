@@ -1,6 +1,6 @@
 .toolbar {
   width: 90%;
-  display: flex;
+  /*display: flex; */
 }
 
 .counter {
@@ -64,17 +64,16 @@
 }
 
 .menuPanelStyle {
-  display: inline-flex;
-  align-self: center;
   float: left;
-  width: 70%;
+  position: absolute;
+  top: 40%;
 }
 
 .buttonPanelStyle {
+  display: flex;
+  float: right;
+  top: 24%;
   position: relative;
-    display: flex;
-    align-self: center;
-    float: right;
 }
 
 .search {

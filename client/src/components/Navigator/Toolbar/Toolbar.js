@@ -33,7 +33,7 @@ const Toolbar = (props) => {
             </div>
             <div className={styles.buttonPanelStyle}>
                 {props.page == 'shop' ?
-                <SearchPanel toolbarInput={styles.toolbarInput} cartSection={styles.cartSection} css={iconStyle, searchStyle} search={(e) => props.searchProduct(e)} /> : null }
+                    <SearchPanel toolbarInput={styles.toolbarInput} cartSection={styles.cartSection} css={iconStyle, searchStyle} search={(e) => props.searchProduct(e)} /> : null}
 
                 {userContext.user.admin == 0 ? null :
                     <div className={styles.cartSection}>
@@ -44,14 +44,17 @@ const Toolbar = (props) => {
                 }
 
                 <IconLabel text={cartContext.count} labelClick="/cart" href="/cart">
-                    <ShoppingCartIcon style={iconStyle}/>
+                    <ShoppingCartIcon style={iconStyle} />
                 </IconLabel>
 
                 <IconLabel show text='x' labelClick={() => props.logout()} href="/customer" secondHref="/">
-                    <Person style={iconStyle}/>
+                    <Person style={iconStyle} />
                 </IconLabel>
             </div>
         </div>
     )
 }
+
+
+
 export default Toolbar;
