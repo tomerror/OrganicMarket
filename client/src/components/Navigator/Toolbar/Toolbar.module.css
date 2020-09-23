@@ -1,6 +1,5 @@
 .toolbar {
   width: 90%;
-  align-self: center;
   display: flex;
 }
 
@@ -21,7 +20,7 @@
 }
 
 .cartSection {
-  margin-left: 30px;
+  margin-right: 25px;
   position: relative;
 }
 
@@ -66,16 +65,16 @@
 
 .menuPanelStyle {
   display: inline-flex;
-  margin: 1%;
+  align-self: center;
+  float: left;
+  width: 70%;
 }
 
 .buttonPanelStyle {
-  /* position: absolute;
-        display: flex;
-        margin-right: 1%;
-        right: 0; */
   position: relative;
-  display: flex;
+    display: flex;
+    align-self: center;
+    float: right;
 }
 
 .search {
