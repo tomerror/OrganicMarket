@@ -15,9 +15,6 @@ class Customer extends Component {
     static contextType = UserContext;
 
     componentDidMount = () => {
-        if (this.context.user.username == undefined) {
-            return <Redirect to="/login" />
-        }
         this.getPayments();
     }
 

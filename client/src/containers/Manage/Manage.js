@@ -163,31 +163,35 @@ class Manage extends Component {
             return <Redirect to={this.state.redirect} />
         }
 
-        const logs = this.state.filterLogs.map((log,key) => {
-            return <Logger log={log} key={key}/>
+        const logs = this.state.filterLogs.map((log, key) => {
+            return <Logger log={log} key={key} />
         })
 
         return (
-            <div className={styles.panel}>
-                <Panel title="System Logs"
-                    dropFunc={(e) => this.changeSection(e.target.value)}
-                    select="Choose:"
-                    droplist={this.state.tabs}>
-                    {logs}
-                </Panel>
+            <div>
+                { this.context.user.username == undefined ? <Redirect to="/login" /> :
+                    <div className={styles.panel}>
+                        <Panel title="System Logs"
+                            dropFunc={(e) => this.changeSection(e.target.value)}
+                            select="Choose:"
+                            droplist={this.state.tabs}>
+                            {logs}
+                        </Panel>
 
-                <Panel title="Products"
-                    dropFunc={(e) => this.changeProducts(e.target.value)}
-                    select="Choose:"
-                    droplist={this.props.productTabs}>
+                        <Panel title="Products"
+                            dropFunc={(e) => this.changeProducts(e.target.value)}
+                            select="Choose:"
+                            droplist={this.props.productTabs}>
 
-                    <Items items={this.state.filterProducts}
-                        panel={true}
-                        counterInc={(p) => this.counterInc(p)}
-                        counterDec={(p) => this.counterDec(p)}
-                        iconFunc1={(s) => this.setDiscount(s)}
-                        iconFunc2={(s) => this.setShow(s)} />
-                </Panel>
+                            <Items items={this.state.filterProducts}
+                                panel={true}
+                                counterInc={(p) => this.counterInc(p)}
+                                counterDec={(p) => this.counterDec(p)}
+                                iconFunc1={(s) => this.setDiscount(s)}
+                                iconFunc2={(s) => this.setShow(s)} />
+                        </Panel>
+                    </div>
+                }
             </div>
         )
     }

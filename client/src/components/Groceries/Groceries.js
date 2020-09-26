@@ -1,8 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useContext } from 'react';
+import { Redirect } from 'react-router-dom';
+import UserContext from '../../context/user-context';
 import Products from '../Products/Products';
 import styles from './Groceries.module.css';
 
 const Groceries = (props) => {
+    const userContext = useContext(UserContext);
+    
+    if (userContext.user.username == undefined) {
+        return <Redirect to="/login" />
+    }
+    
     const productExists = (cart, product) => {
         return cart.find(x => x.name == product)
     }
@@ -63,11 +71,11 @@ const Groceries = (props) => {
     let products = []
     if (props.products.length != undefined) {
         let productView = [];
-        if(props.filter != ''){
+        if (props.filter != '') {
             productView = props.products.filter(product => product.display.toLowerCase().includes(props.filter))
         } else {
             productView = props.products.filter(product => product.type == props.match.params.category.toLowerCase())
-        } 
+        }
         products = <Products
             products={productView}
             cart={props.cart}
