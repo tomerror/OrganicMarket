@@ -12,7 +12,7 @@ class Organic extends Component {
   state = {
     logged: false,
     user: {},
-    products: {},
+    products: [],
     cart: {
       amount: 0,
       count: 0,
@@ -129,54 +129,51 @@ class Organic extends Component {
     }
     return (
       <div>
-        { this.state.logged ? <Navbar
-          tabs={tabs}
-          // menuFunc={(nav) => this.changeSection(nav)}
-          // page={this.state.page}
-          // viewPage={(p) => this.viewPage(p)}
-          cartSize={this.state.cart.items.length}
-          searchProduct={(e) => this.searchProduct(e)}
-          logout={() => this.logout()}
-          error={this.state.error} /> : null}
         <UserContext.Provider value={{ user: this.state.user }}>
+          {this.state.logged ? <Navbar
+            tabs={tabs}
+            // menuFunc={(nav) => this.changeSection(nav)}
+            // page={this.state.page}
+            // viewPage={(p) => this.viewPage(p)}
+            cartSize={this.state.cart.items.length}
+            searchProduct={(e) => this.searchProduct(e)}
+            logout={() => this.logout()}
+            error={this.state.error} /> : null}
           <Switch>
             <Route path="/login" exact render={(props) => <Login {...props} setUser={(u) => this.setUser(u)} login={() => this.getData()} />} />
-
-            <div className={classes.dataFrame}>
-              <Route path="/shop/:category"
-                render={(props) =>
-                  <Groceries {...props}
-                    products={this.state.products}
-                    filter={this.state.search}
-                    cart={this.state.cart}
-                    setCart={(c) => this.setCart(c)} />} />
-              <Route path="/cart" exact render={(props) =>
-                <Checkout {...props}
+            <Route path="/shop/:category"
+              render={(props) =>
+                <Groceries {...props}
+                  products={this.state.products}
+                  filter={this.state.search}
                   cart={this.state.cart}
-                  setCart={(c) => this.setCart(c)}
-                // sendPayment={() => this.sendPayment()}
-                // viewPage={(s) => this.viewPage(s)}
+                  setCart={(c) => this.setCart(c)} />} />
+            <Route path="/cart" exact render={(props) =>
+              <Checkout {...props}
+                cart={this.state.cart}
+                setCart={(c) => this.setCart(c)}
+              // sendPayment={() => this.sendPayment()}
+              // viewPage={(s) => this.viewPage(s)}
+              />} />
+            <Route path="/manage" exact
+              render={() =>
+                <Manage
+                  // getPanel={() => this.getPanel()}
+                  setError={(e) => this.setError(e)}
+                  clearError={() => this.clearError()}
+                  products={this.state.products}
+                  productTabs={this.state.tabs}
+                  reloadProduct={() => this.getData()}
+                //viewPage={(s) => this.viewPage(s)}
                 />} />
-              <Route path="/manage" exact
-                render={() =>
-                  <Manage
-                    // getPanel={() => this.getPanel()}
-                    setError={(e) => this.setError(e)}
-                    clearError={() => this.clearError()}
-                    products={this.state.products}
-                    productTabs={this.state.tabs}
-                    reloadProduct={() => this.getData()}
-                  //viewPage={(s) => this.viewPage(s)}
-                  />} />
 
-              <Route path="/customer" exact
-                render={() =>
-                  <Customer
-                    setError={(e) => this.setError(e)}
-                    clearError={() => this.clearError()} />} />
-              <Route path="/readme" exact
-                render={() => <Readme />} />
-            </div>
+            <Route path="/customer" exact
+              render={() =>
+                <Customer
+                  setError={(e) => this.setError(e)}
+                  clearError={() => this.clearError()} />} />
+            <Route path="/readme" exact
+              render={() => <Readme />} />
             <Redirect from="/" to="/login" />
 
           </Switch>

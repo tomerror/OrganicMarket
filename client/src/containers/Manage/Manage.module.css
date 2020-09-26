@@ -29,6 +29,7 @@
 
 .panel {
   display: flex;
+  margin: 5%;
 }
 
 .title {

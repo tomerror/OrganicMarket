@@ -30,7 +30,7 @@ const Toolbar = (props) => {
             <div className={styles.buttonPanelStyle}>
                 <SearchPanel toolbarInput={styles.toolbarInput} cartSection={styles.cartSection} css={iconStyle, searchStyle} search={(e) => props.searchProduct(e)} />
 
-                {userContext.user.admin == 0 ? null :
+                {userContext.user.admin == "0" ? null :
                     <div className={styles.cartSection}>
                         <NavLink to="/manage">
                             <Fingerprint style={fingerStyle} />

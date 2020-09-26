@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useEffect } from 'react';
 import Products from '../Products/Products';
 import styles from './Groceries.module.css';
 

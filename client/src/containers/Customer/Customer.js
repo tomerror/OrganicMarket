@@ -9,13 +9,15 @@ import UserContext from '../../context/user-context';
 
 class Customer extends Component {
     state = {
-        orders: [],
-        redirect: null
+        orders: []
     }
 
     static contextType = UserContext;
 
     componentDidMount = () => {
+        if (this.context.user.username == undefined) {
+            return <Redirect to="/login" />
+        }
         this.getPayments();
     }
 
@@ -37,10 +39,7 @@ class Customer extends Component {
     }
 
     render() {
-        if (this.state.redirect) {
-            return <Redirect to={this.state.redirect} />
-        }
-        const cubes = [{
+        let cubes = [{
             title: "Member",
             color: styles.ccad2c5,
             message: moment().diff(this.context.user.creation_date, "days"),
@@ -52,25 +51,31 @@ class Customer extends Component {
         }, {
             title: "Email",
             color: styles.c52796f,
-            message: this.context.user.email.split('@')[0],
-            submessage: '@' + this.context.user.email.split('@')[1]
+            message: "dd",//this.context.user.email.split('@')[0],
+            submessage: "dd",//'@' + this.context.user.email.split('@')[1]
         }, {
             title: "Address",
             color: styles.c354f52,
-            message: this.context.user.address.split(',')[0],
-            submessage: this.context.user.address.split(',')[1]
+            message: "dd",//this.context.user.address.split(',')[0],
+            submessage: "dd",//this.context.user.address.split(',')[1]
         }]
+
+
         return (
-            <div>
-                <div className={styles.personalDetails}>
-                    <div className={styles.name}>
-                        {utils.capitalize(this.context.user.firstname)} {utils.capitalize(this.context.user.lastname)}
+            <div  className={styles.frame}>
+                { this.context.user.username == undefined ? <Redirect to="/login" /> :
+                    <div>
+                        <div className={styles.personalDetails}>
+                            <div className={styles.name}>
+                                {utils.capitalize(this.context.user.firstname)} {utils.capitalize(this.context.user.lastname)}
+                            </div>
+                        </div>
+                        <div className={styles.cubesDiv}>
+                            <Cubes cubes={cubes} />
+                        </div>
+                        <History orders={this.state.orders} />
                     </div>
-                </div>
-                <div className={styles.cubesDiv}>
-                    <Cubes cubes={cubes} />
-                </div>
-                <History orders={this.state.orders} />
+                }
             </div>
         )
     }
