@@ -15,7 +15,9 @@ class Customer extends Component {
     static contextType = UserContext;
 
     componentDidMount = () => {
-        this.getPayments();
+        if(this.context.user.username != undefined){
+            this.getPayments();
+        }
     }
 
     getPayments = () => {
@@ -59,7 +61,7 @@ class Customer extends Component {
 
 
         return (
-            <div  className={styles.frame}>
+            <div className={styles.frame}>
                 { this.context.user.username == undefined ? <Redirect to="/login" /> :
                     <div>
                         <div className={styles.personalDetails}>
