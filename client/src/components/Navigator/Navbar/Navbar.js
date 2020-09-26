@@ -18,6 +18,7 @@ const Navbar = (props) => {
                     tabs={props.tabs}
                     menuFunc={(nav) => props.menuFunc(nav)}
                     page={props.page}
+                    cartSize={props.cartSize}
                     viewPage={(p) => props.viewPage(p)}
                     searchProduct={(e) => props.searchProduct(e)}
                     logout={() => props.logout()} />

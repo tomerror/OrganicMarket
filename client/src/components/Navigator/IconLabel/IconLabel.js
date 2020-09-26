@@ -1,13 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import styles from '../Toolbar/Toolbar.module.css';
 
 const IconLabel = (props) => {
     return (
         <div className={styles.cartSection}>
-            <Link to={props.href}>
+            <NavLink to={props.href}>
                 <div className={props.css}>{props.children}</div>
-            </Link>
+            </NavLink>
 
             {props.text > 0 || props.show ?
                 <div className={styles.counter}>

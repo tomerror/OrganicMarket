@@ -1,17 +1,15 @@
 import React, { useContext } from 'react';
-import CartContext from '../../context/cart-context';
 import Products from '../Products/Products';
-import './Groceries.css';
+import styles from './Groceries.module.css';
 
-const Groceries = ( props ) => {
-    const cartContext = useContext(CartContext);
+const Groceries = (props) => {
     const productExists = (cart, product) => {
         return cart.find(x => x.name == product)
-      }
-    
+    }
+
     const cartCounterInc = (product) => {
-        let updateCart = cartContext.items;
-        if(!productExists(updateCart, product.name)){
+        let updateCart = props.cart.items;
+        if (!productExists(updateCart, product.name)) {
             let setProduct = {
                 "category": product.type,
                 "name": product.name,
@@ -26,52 +24,61 @@ const Groceries = ( props ) => {
                 }
             }
             updateCart.push(setProduct)
-        }   
-        else {
-            updateCart.filter(x => x.name == product.name).map(x => {x.count++; x.supply--})
         }
-        let amount = parseFloat((cartContext.amount + product.weight * (product.price - product.discount*0.1*product.price)).toFixed(2))
+        else {
+            updateCart.filter(x => x.name == product.name).map(x => { x.count++; x.supply-- })
+        }
+        let amount = parseFloat((props.cart.amount + product.weight * (product.price - product.discount * 0.1 * product.price)).toFixed(2))
         let cart = {
             amount: amount,
-            count: cartContext.count + 1,
+            count: props.cart.count + 1,
             items: updateCart,
-            delivery: cartContext.delivery
+            delivery: props.cart.delivery
         }
         props.setCart(cart)
     }
 
     const cartCounterDec = (product) => {
-        let updateCart = cartContext.items;
-        let idxProduct = updateCart.findIndex(x=>x.name == product.name)
-    
-        if(idxProduct != -1){
-            if(updateCart[idxProduct].count > 1){
+        let updateCart = props.cart.items;
+        let idxProduct = updateCart.findIndex(x => x.name == product.name)
+
+        if (idxProduct != -1) {
+            if (updateCart[idxProduct].count > 1) {
                 updateCart[idxProduct].count -= 1;
                 updateCart[idxProduct].supply += 1;
             } else {
                 updateCart.splice(idxProduct, 1);
             }
-            let amount = parseFloat((cartContext.amount - product.weight * (product.price - product.discount*0.1*product.price)).toFixed(2))
+            let amount = parseFloat((props.cart.amount - product.weight * (product.price - product.discount * 0.1 * product.price)).toFixed(2))
             let cart = {
                 amount: amount,
-                count: cartContext.count - 1,
+                count: props.cart.count - 1,
                 items: updateCart,
-                delivery: cartContext.delivery
+                delivery: props.cart.delivery
             }
             props.setCart(cart)
         }
     }
 
-    const products = <Products 
-            products = {props.products}
-            cart = {cartContext}
+    let products = []
+    if (props.products.length != undefined) {
+        let productView = [];
+        if(props.filter != ''){
+            productView = props.products.filter(product => product.display.toLowerCase().includes(props.filter))
+        } else {
+            productView = props.products.filter(product => product.type == props.match.params.category.toLowerCase())
+        } 
+        products = <Products
+            products={productView}
+            cart={props.cart}
             counterInc={(p) => cartCounterInc(p)}
             counterDec={(p) => cartCounterDec(p)}
         />
+    }
 
     return (
-        <div>
-          {products}
+        <div className={styles.frame}>
+            {products}
         </div>
     )
 }

@@ -25,6 +25,7 @@ class Login extends Component {
     static contextType = UserContext;
 
     componentDidMount = () => {
+        console.log(this.props)
         const user = cookie.load('username')
         const pass = cookie.load('password')
         if ((user != undefined) && (pass != undefined)) {
@@ -112,8 +113,11 @@ class Login extends Component {
                 cookie.save('username', user.username, { path: '/', maxAge: 60 * 30 })
                 cookie.save('password', user.password, { path: '/', maxAge: 60 * 30 })
             }
-            window.location.href = '/';
         }
+        this.props.login().then(response => {
+            this.props.history.push(`/shop/${response}`);
+        });
+        
     }
 
     render = () => {

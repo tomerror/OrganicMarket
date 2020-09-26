@@ -53,7 +53,7 @@
   display: inline;
 }
 
-.tab:hover {
+.tab:hover{
   color: #aeecb8;
 }
 
@@ -90,4 +90,10 @@
 
 a {
   text-decoration: none;
+}
+
+
+a:hover,
+a.active{
+  color: #aeecb8;
 }

@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import UserContext from '../../../context/user-context';
-import CartContext from '../../../context/cart-context';
 import styles from './Toolbar.module.css';
 import Tabs from '../../Tabs/Tabs';
 import IconLabel from '../IconLabel/IconLabel';
@@ -12,7 +11,6 @@ import SearchPanel from '../../SearchPanel/SearchPanel';
 
 const Toolbar = (props) => {
     const userContext = useContext(UserContext);
-    const cartContext = useContext(CartContext);
     const iconStyle = { color: "#d8f3dc", fontSize: "40px", margin: "1%" }
     const fingerStyle = { color: "#e63946", fontSize: "40px", margin: "1%" }
     const searchStyle = {
@@ -27,23 +25,20 @@ const Toolbar = (props) => {
     return (
         <div className={styles.toolbar}>
             <div className={styles.menuPanelStyle}>
-                <Link to="/">
-                    <Tabs tabs={props.tabs} menuFunc={(t) => props.menuFunc(t)} styles={styles} />
-                </Link>
+                <Tabs tabs={props.tabs} menuFunc={(t) => props.menuFunc(t)} styles={styles} />
             </div>
             <div className={styles.buttonPanelStyle}>
-                {props.page == 'shop' ?
-                    <SearchPanel toolbarInput={styles.toolbarInput} cartSection={styles.cartSection} css={iconStyle, searchStyle} search={(e) => props.searchProduct(e)} /> : null}
+                <SearchPanel toolbarInput={styles.toolbarInput} cartSection={styles.cartSection} css={iconStyle, searchStyle} search={(e) => props.searchProduct(e)} />
 
                 {userContext.user.admin == 0 ? null :
                     <div className={styles.cartSection}>
-                        <Link to="/manage">
-                            <Fingerprint style={fingerStyle} onClick={() => props.viewPage('manage')} />
-                        </Link>
+                        <NavLink to="/manage">
+                            <Fingerprint style={fingerStyle} />
+                        </NavLink>
                     </div>
                 }
 
-                <IconLabel text={cartContext.count} labelClick="/cart" href="/cart">
+                <IconLabel text={props.cartSize} labelClick="/cart" href="/cart">
                     <ShoppingCartIcon style={iconStyle} />
                 </IconLabel>
 

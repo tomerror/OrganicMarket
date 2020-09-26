@@ -28,7 +28,6 @@ class Customer extends Component {
             data: { username: this.context.user.username, password: this.context.user.password }
         }).then((response) => {
             this.setState({ orders: response.data })
-            this.props.viewPage('customer')
         }, (error) => {
             let err = ''
             try { err = error.response.data }

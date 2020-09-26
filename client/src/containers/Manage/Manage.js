@@ -17,6 +17,7 @@ class Manage extends Component {
     static contextType = UserContext;
 
     componentDidMount = () => {
+        console.log(this.props);
         this.getPanel();
     }
 
@@ -32,7 +33,7 @@ class Manage extends Component {
             const tabs = []
             this.state.logs.map((l) => { if (!tabs.includes(l.username)) { tabs.push(l.username) } })
             this.setState({ tabs: tabs })
-            this.props.viewPage('manage')
+            //this.props.viewPage('manage')
         }, (error) => {
             let err = ''
             try { this.setState({ redirect: '/' }) }
@@ -132,7 +133,7 @@ class Manage extends Component {
 
     changeProducts = (value) => {
         this.setState({ productTab: value })
-        this.setState({ filterProducts: this.props.p.filter((product) => product.type == value.toLowerCase()) })
+        this.setState({ filterProducts: this.props.products.filter((product) => product.type == value.toLowerCase()) })
     }
 
     updateDiscount = (name) => {
