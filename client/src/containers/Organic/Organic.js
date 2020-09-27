@@ -7,7 +7,7 @@ import { Navbar, Groceries, Readme, Sidebar } from '../../components';
 import UserContext from '../../context/user-context';
 import { Checkout, Manage, Customer } from '../../containers';
 import utils from '../../utils';
-import classes from './Organic.module.css';
+
 class Organic extends Component {
   state = {
     logged: false,
@@ -49,7 +49,6 @@ class Organic extends Component {
           }
           this.setTabs()
           resolve(this.state.tabs[0])
-          //this.props.history.push(`/shop/fruits`);
         }, (error) => {
           let err = ''
           try { err = error.response.data }
@@ -101,21 +100,12 @@ class Organic extends Component {
   }
   searchProduct = (event) => {
     this.setState({ search: event.target.value })
-    // let search = event.target.value
-    // if (search != '') {
-    //   let found = []
-    //   found = this.state.products.filter(f => f.display.toLowerCase().includes(search))
-    //   this.setState({ section: found })
-    // } else {
-    //   this.changeSection(this.state.products[0].type)
-    // }
   }
 
   logout = () => {
     cookie.remove('username', { path: '/' })
     cookie.remove('password', { path: '/' })
-    // window.location.reload(false);
-    this.props.history.push('/login');
+    this.setState({user: {} })
   }
 
   setProducts = (p) => {
@@ -130,11 +120,9 @@ class Organic extends Component {
     return (
       <div>
         <UserContext.Provider value={{ user: this.state.user }}>
+          {this.state.user.username == undefined ? <Redirect to="/login"/>: null }
           {this.state.logged ? <Navbar
             tabs={tabs}
-            // menuFunc={(nav) => this.changeSection(nav)}
-            // page={this.state.page}
-            // viewPage={(p) => this.viewPage(p)}
             cartSize={this.state.cart.items.length}
             searchProduct={(e) => this.searchProduct(e)}
             logout={() => this.logout()}
@@ -152,30 +140,27 @@ class Organic extends Component {
               <Checkout {...props}
                 cart={this.state.cart}
                 setCart={(c) => this.setCart(c)}
-              // sendPayment={() => this.sendPayment()}
-              // viewPage={(s) => this.viewPage(s)}
               />} />
             <Route path="/manage" exact
-              render={() =>
-                <Manage
-                  // getPanel={() => this.getPanel()}
+              render={(props) =>
+                <Manage {...props}
                   setError={(e) => this.setError(e)}
                   clearError={() => this.clearError()}
                   products={this.state.products}
                   productTabs={this.state.tabs}
                   reloadProduct={() => this.getData()}
-                //viewPage={(s) => this.viewPage(s)}
                 />} />
 
             <Route path="/customer" exact
-              render={() =>
-                <Customer
+              render={(props) =>
+                <Customer {...props}
                   setError={(e) => this.setError(e)}
                   clearError={() => this.clearError()} />} />
             <Route path="/readme" exact
               render={() => <Readme />} />
-            <Redirect from="/" to="/login" />
-
+            
+            <Route render={() => <h1>not found</h1>}/>
+            {/* <Redirect from="/" to="/login" /> */}
           </Switch>
         </UserContext.Provider>
       </div>
@@ -183,9 +168,4 @@ class Organic extends Component {
   }
 }
 
-
-{/* {this.state.logged ? <Shop /> : } */ }
-{/* <Route path="/login" exact component={Login} />
-          <Route path="/" exact component={Shop} /> */}
-//<Route path="/" exact component={Login} />
 export default Organic;
