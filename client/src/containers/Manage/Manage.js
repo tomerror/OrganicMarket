@@ -3,7 +3,8 @@ import { Redirect } from 'react-router-dom';
 import styles from './Manage.module.css';
 import axios from 'axios';
 import { Logger, Items, Panel } from '../../components';
-import UserContext from '../../context/user-context';
+import { connect } from 'react-redux';
+import * as actionTypes from '../../store/actions';
 
 class Manage extends Component {
     state = {
@@ -13,8 +14,6 @@ class Manage extends Component {
         filterProducts: [],
         redirect: null
     }
-
-    static contextType = UserContext;
 
     componentDidMount = () => {
         console.log(this.props);
@@ -27,13 +26,12 @@ class Manage extends Component {
             method: 'post',
             url: 'http://localhost:4000/manage/getPanel',
             headers: {},
-            data: { username: this.context.user.username, password: this.context.user.password }
+            data: { username: this.props.user.username, password: this.props.user.password }
         }).then((response) => {
             this.setState({ logs: response.data, filterLogs: response.data })
             const tabs = []
             this.state.logs.map((l) => { if (!tabs.includes(l.username)) { tabs.push(l.username) } })
             this.setState({ tabs: tabs })
-            //this.props.viewPage('manage')
         }, (error) => {
             let err = ''
             try { this.setState({ redirect: '/' }) }
@@ -48,7 +46,7 @@ class Manage extends Component {
             method: 'post',
             url: 'http://localhost:4000/manage/discount',
             headers: {},
-            data: { username: this.context.user.username, password: this.context.user.password, product: product }
+            data: { username: this.props.user.username, password: this.props.user.password, product: product }
         }).then((response) => {
             this.props.reloadProduct();
             this.updateDiscount(product);
@@ -66,7 +64,7 @@ class Manage extends Component {
             method: 'post',
             url: 'http://localhost:4000/manage/productVisibility',
             headers: {},
-            data: { username: this.context.user.username, password: this.context.user.password, product: product }
+            data: { username: this.props.user.username, password: this.props.user.password, product: product }
         }).then((response) => {
             this.props.reloadProduct();
             this.updateVisibility(product);
@@ -84,7 +82,7 @@ class Manage extends Component {
             method: 'post',
             url: 'http://localhost:4000/manage/supplyInc',
             headers: {},
-            data: { username: this.context.user.username, password: this.context.user.password, product: product.display }
+            data: { username: this.props.user.username, password: this.props.user.password, product: product.display }
         }).then((response) => {
             this.props.reloadProduct();
             this.updateSupply(product.display, 1);
@@ -103,7 +101,7 @@ class Manage extends Component {
                 method: 'post',
                 url: 'http://localhost:4000/manage/supplyDec',
                 headers: {},
-                data: { username: this.context.user.username, password: this.context.user.password, product: product.display }
+                data: { username: this.props.user.username, password: this.props.user.password, product: product.display }
             }).then((response) => {
                 this.props.reloadProduct();
                 this.updateSupply(product.display, -1);
@@ -169,7 +167,7 @@ class Manage extends Component {
 
         return (
             <div>
-                { this.context.user.username == undefined ? <Redirect to="/login" /> :
+                { this.props.user.username == '' ? <Redirect to="/login" /> :
                     <div className={styles.panel}>
                         <Panel title="System Logs"
                             dropFunc={(e) => this.changeSection(e.target.value)}
@@ -197,4 +195,11 @@ class Manage extends Component {
     }
 }
 
-export default Manage;
+const mapStateToProps = state => {
+    return {
+        user: state.user,
+        products: state.products.products
+    }
+}
+
+export default connect(mapStateToProps, null)(Manage);

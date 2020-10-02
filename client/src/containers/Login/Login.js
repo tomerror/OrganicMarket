@@ -5,8 +5,8 @@ import styles from './Login.module.css';
 import LockIcon from '@material-ui/icons/Lock';
 import { Signin, Signup, LoginFooter } from '../../components';
 import moment from 'moment';
-import UserContext from '../../context/user-context';
-import { Redirect } from 'react-router';
+import { connect } from 'react-redux';
+import * as actionTypes from '../../store/actions';
 
 class Login extends Component {
     state = {
@@ -21,8 +21,6 @@ class Login extends Component {
         error: "",
         pastReload: false
     }
-
-    static contextType = UserContext;
 
     componentDidMount = () => {
         console.log(this.props)
@@ -103,7 +101,7 @@ class Login extends Component {
     };
 
     approvedDetails = (user) => {
-        this.props.setUser(user)
+        this.props.setNewUser(user)
         if (!this.state.pastReload) {
             if (this.state.remember) {
                 cookie.save('username', user.username, { path: '/' })
@@ -117,7 +115,7 @@ class Login extends Component {
         this.props.login().then(response => {
             this.props.history.push(`/shop/${response}`);
         });
-        
+
     }
 
     render = () => {
@@ -161,4 +159,21 @@ class Login extends Component {
     }
 }
 
-export default Login;
+const mapDispatchToProps = dispatch => {
+    return {
+        setNewUser: (user) => dispatch({
+            type: actionTypes.SET_NEW_USER, payload: {
+                username: user.username,
+                password: user.password,
+                firstName: user.firstname,
+                lastName: user.lastname,
+                email: user.email,
+                address: user.address,
+                admin: user.admin == "1" ? true : false,
+                creation_date: user.creation_date
+            }
+        })
+    }
+}
+
+export default connect(null, mapDispatchToProps)(Login);

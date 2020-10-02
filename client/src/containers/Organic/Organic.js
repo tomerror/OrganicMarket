@@ -4,21 +4,15 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import Login from '../Login/Login';
 import axios from 'axios';
 import { Navbar, Groceries, Readme, Sidebar } from '../../components';
-import UserContext from '../../context/user-context';
+//import UserContext from '../../context/user-context';
 import { Checkout, Manage, Customer } from '../../containers';
 import utils from '../../utils';
+import { connect } from 'react-redux';
+import * as actionTypes from '../../store/actions';
 
 class Organic extends Component {
   state = {
     logged: false,
-    user: {},
-    products: [],
-    cart: {
-      amount: 0,
-      count: 0,
-      items: [],
-      delivery: 50
-    },
     search: '',
     tabs: [],
     error: ''
@@ -29,8 +23,9 @@ class Organic extends Component {
   }
 
   setCart = (cart) => {
-    cookie.save(`cart:${this.state.user.username}`, JSON.stringify(cart), { path: `/` })
+    cookie.save(`cart:${this.props.user.username}`, JSON.stringify(cart), { path: `/` })
     this.setState({ cart: cart });
+    this.props.onIncrementCounter();
   }
 
   getData = () => {
@@ -38,16 +33,18 @@ class Organic extends Component {
       axios({
         method: 'post',
         url: `http://localhost:4000/data/shop`,
-        data: { username: this.state.user.username, password: this.state.user.password }
+        data: { username: this.props.user.username, password: this.props.user.password }
       })
         .then((response) => {
-          this.setState({ products: response.data })
-          if (cookie.load(`cart:${this.state.user.username}`) != undefined) {
-            const tempCart = cookie.load(`cart:${this.state.user.username}`)
+          this.props.addProduct(response.data)
+          //this.setState({ products: response.data })
+          if (cookie.load(`cart:${this.props.user.username}`) != undefined) {
+            const tempCart = cookie.load(`cart:${this.props.user.username}`)
             this.setState({ cart: tempCart })
             this.updateCartOnAdminChanges()
           }
           this.setTabs()
+          this.setState({ logged: true })
           resolve(this.state.tabs[0])
         }, (error) => {
           let err = ''
@@ -59,7 +56,7 @@ class Organic extends Component {
   }
 
   setTabs = () => {
-    let filter = utils.reduceDuplicate(this.state.products)
+    let filter = utils.reduceDuplicate(this.props.products)
     this.setState({ tabs: filter })
   }
 
@@ -72,7 +69,7 @@ class Organic extends Component {
     }
 
     this.state.cart.items.forEach(fromCart => {
-      let fromDB = this.state.products.filter((p) => p.display == fromCart.display)[0]
+      let fromDB = this.props.products.filter((p) => p.display == fromCart.display)[0]
       cart.items.push({
         "category": fromDB.type,
         "name": fromDB.name,
@@ -105,7 +102,7 @@ class Organic extends Component {
   logout = () => {
     cookie.remove('username', { path: '/' })
     cookie.remove('password', { path: '/' })
-    this.setState({user: {} })
+    this.props.logoutUser()
   }
 
   setProducts = (p) => {
@@ -115,57 +112,50 @@ class Organic extends Component {
   render() {
     let tabs = []
     if (this.state.tabs.length > 0) {
-      tabs = utils.reduceDuplicate(this.state.products)
+      tabs = utils.reduceDuplicate(this.props.products)
     }
     return (
       <div>
-        <UserContext.Provider value={{ user: this.state.user }}>
-          {this.state.user.username == undefined ? <Redirect to="/login"/>: null }
-          {this.state.logged ? <Navbar
-            tabs={tabs}
-            cartSize={this.state.cart.items.length}
-            searchProduct={(e) => this.searchProduct(e)}
-            logout={() => this.logout()}
-            error={this.state.error} /> : null}
-          <Switch>
-            <Route path="/login" exact render={(props) => <Login {...props} setUser={(u) => this.setUser(u)} login={() => this.getData()} />} />
-            <Route path="/shop/:category"
-              render={(props) =>
-                <Groceries {...props}
-                  products={this.state.products}
-                  filter={this.state.search}
-                  cart={this.state.cart}
-                  setCart={(c) => this.setCart(c)} />} />
-            <Route path="/cart" exact render={(props) =>
-              <Checkout {...props}
-                cart={this.state.cart}
-                setCart={(c) => this.setCart(c)}
+        {this.props.user.username == '' ? <Redirect to="/login" /> : null}
+        {this.state.logged ?
+          <Navbar tabs={tabs} searchProduct={(e) => this.searchProduct(e)} logout={() => this.logout()} error={this.state.error} /> 
+          : null}
+        <Switch>
+          <Route path="/login" exact render={(props) => <Login {...props} login={() => this.getData()} />} />
+          <Route path="/shop/:category" render={(props) => <Groceries {...props} filter={this.state.search} />} />
+          <Route path="/cart" exact render={(props) => <Checkout {...props} />} />
+          <Route path="/manage" exact
+            render={(props) =>
+              <Manage {...props}
+                setError={(e) => this.setError(e)}
+                clearError={() => this.clearError()}
+                productTabs={this.state.tabs}
+                reloadProduct={() => this.getData()}
               />} />
-            <Route path="/manage" exact
-              render={(props) =>
-                <Manage {...props}
-                  setError={(e) => this.setError(e)}
-                  clearError={() => this.clearError()}
-                  products={this.state.products}
-                  productTabs={this.state.tabs}
-                  reloadProduct={() => this.getData()}
-                />} />
-
-            <Route path="/customer" exact
-              render={(props) =>
-                <Customer {...props}
-                  setError={(e) => this.setError(e)}
-                  clearError={() => this.clearError()} />} />
-            <Route path="/readme" exact
-              render={() => <Readme />} />
-            
-            <Route render={() => <h1>not found</h1>}/>
-            {/* <Redirect from="/" to="/login" /> */}
-          </Switch>
-        </UserContext.Provider>
+          <Route path="/customer" exact
+            render={(props) => <Customer {...props} setError={(e) => this.setError(e)} clearError={() => this.clearError()} />} />
+          <Route path="/readme" exact render={() => <Readme />} />
+          <Route render={() => <h1>not found</h1>} />
+          {/* <Redirect from="/" to="/login" /> */}
+        </Switch>
       </div>
     );
   }
 }
 
-export default Organic;
+const mapStateToProps = state => {
+  return {
+    user: state.user,
+    products: state.products.products
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addProduct: (products) => dispatch({ type: actionTypes.ADD_PRODUCT, products: products }),
+    logoutUser: () => dispatch({type: actionTypes.LOGOUT_USER})
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Organic);
+

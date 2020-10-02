@@ -4,56 +4,20 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import { Cart } from '../../components';
 import './Checkout.css';
-import UserContext from '../../context/user-context';
+import { connect } from 'react-redux';
+import * as actionTypes from '../../store/actions';
 
 class Checkout extends Component {
-    static contextType = UserContext;
-    updateCartCounterInc = (product) => {
-        let updateCart = this.props.cart.items;
-        updateCart.filter(x => x.name == product.item.name).map(x => { x.count++; x.supply-- })
-        let amount = parseFloat((this.props.cart.amount + product.item.details.weight * (product.item.details.price)).toFixed(2))
-        let cart = {
-            amount: amount,
-            count: this.props.cart.count + 1,
-            items: updateCart,
-            delivery: this.props.cart.delivery
-        }
-        this.props.setCart(cart)
-    }
-
-    updateCartCounterDec = (product) => {
-        let updateCart = this.props.cart.items;
-        let idxProduct = updateCart.findIndex(x => x.name == product.item.name)
-        if (idxProduct != -1) {
-            if (updateCart[idxProduct].count > 1) {
-                updateCart[idxProduct].count -= 1;
-                updateCart[idxProduct].supply += 1;
-            } else {
-                updateCart.splice(idxProduct, 1);
-            }
-            let amount = parseFloat((this.props.cart.amount - product.item.details.weight * (product.item.details.price - product.item.details.discount * 0.1 * product.item.details.price)).toFixed(2))
-            let cart = {
-                amount: amount,
-                count: this.props.cart.count - 1,
-                items: updateCart,
-                delivery: this.props.cart.delivery
-            }
-            this.props.setCart(cart)
-        }
-    }
-
     sendPayment = () => {
-        //this.clearError();
         axios({
             method: 'post',
             url: 'http://localhost:4000/payment/setPayment',
             headers: {},
-            data: { username: this.context.user.username, password: this.context.user.password, cart: this.props.cart }
+            data: { username: this.props.user.username, password: this.props.user.password, cart: this.props.cart }
         }).then((response) => {
             if (response) {
-                this.setState({ cart: { amount: 0, count: 0, items: [], delivery: 50 } })
-                cookie.remove(`cart:${this.context.user.username}`, { path: '/' })
-                //this.changeSection(this.state.products[0].type)
+                this.props.init_cart()
+                cookie.remove(`cart:${this.props.user.username}`, { path: '/' })
             }
         }, (error) => {
             let err = ''
@@ -66,14 +30,14 @@ class Checkout extends Component {
     render = () => {
         const products = <Cart
             cart={this.props.cart}
-            counterInc={(p) => this.updateCartCounterInc(p)}
-            counterDec={(p) => this.updateCartCounterDec(p)} />
+            counterInc={(p) => this.props.inc_product_in_cart(p)}
+            counterDec={(p) => this.props.dec_product_in_cart(p)} />
 
         const warning = this.props.cart.items.filter(product => product.supply < 0)
 
         return (
             <div>
-                { this.context.user.username == undefined ? <Redirect to="/login" /> :
+                { this.props.user.username == '' ? <Redirect to="/login" /> :
                     <div className="checkout">
                         <div className="checkout-title">
                             Checkout
@@ -90,7 +54,7 @@ class Checkout extends Component {
                                         <div className="checkout-bill-set">
                                             <div className="checkout-bill-title">
                                                 Items total:
-                                </div>
+                                        </div>
                                             <div className="checkout-bill-amount">
                                                 &#8362; {this.props.cart.amount.toFixed(2)}
                                             </div>
@@ -98,7 +62,7 @@ class Checkout extends Component {
                                         <div className="checkout-bill-set">
                                             <div className="checkout-bill-title">
                                                 Delivery:
-                                </div>
+                                        </div>
                                             <div className="checkout-bill-amount">
                                                 &#8362; {this.props.cart.delivery}
                                             </div>
@@ -107,7 +71,7 @@ class Checkout extends Component {
                                         <div className="checkout-bill-set">
                                             <div className="checkout-bill-title">
                                                 Total sum:
-                                </div>
+                                        </div>
                                             <div className="checkout-bill-amount total-amount">
                                                 &#8362; {(this.props.cart.amount + this.props.cart.delivery).toFixed(2)}
                                             </div>
@@ -130,4 +94,19 @@ class Checkout extends Component {
     }
 }
 
-export default Checkout;
+const mapStateToProps = state => {
+    return {
+        user: state.user,
+        cart: state.cart
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        inc_product_in_cart: (product) => dispatch({ type: actionTypes.INC_PRODUCT_IN_CART, value: product }),
+        dec_product_in_cart: (product) => dispatch({ type: actionTypes.DEC_PRODUCT_IN_CART, value: product }),
+        init_cart: () => dispatch({type: actionTypes.INIT_CART})
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Checkout);

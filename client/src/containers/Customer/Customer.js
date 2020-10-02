@@ -5,17 +5,17 @@ import axios from 'axios';
 import moment from 'moment';
 import { Cubes, History } from '../../components';
 import utils from '../../utils';
-import UserContext from '../../context/user-context';
+
+import { connect } from 'react-redux';
+import * as actionTypes from '../../store/actions';
 
 class Customer extends Component {
     state = {
         orders: []
     }
 
-    static contextType = UserContext;
-
     componentDidMount = () => {
-        if(this.context.user.username != undefined){
+        if(this.props.user.username != ''){
             this.getPayments();
         }
     }
@@ -26,7 +26,7 @@ class Customer extends Component {
             method: 'post',
             url: 'http://localhost:4000/payment/getPayments',
             headers: {},
-            data: { username: this.context.user.username, password: this.context.user.password }
+            data: { username: this.props.user.username, password: this.props.user.password }
         }).then((response) => {
             this.setState({ orders: response.data })
         }, (error) => {
@@ -41,7 +41,7 @@ class Customer extends Component {
         let cubes = [{
             title: "Member",
             color: styles.ccad2c5,
-            message: moment().diff(this.context.user.creation_date, "days"),
+            message: moment().diff(this.props.user.creation_date, "days"),
             submessage: "Days"
         }, {
             title: "Transactions",
@@ -62,11 +62,11 @@ class Customer extends Component {
 
         return (
             <div className={styles.frame}>
-                { this.context.user.username == undefined ? <Redirect to="/login" /> :
+                { this.props.user.username == '' ? <Redirect to="/login" /> :
                     <div>
                         <div className={styles.personalDetails}>
                             <div className={styles.name}>
-                                {utils.capitalize(this.context.user.firstname)} {utils.capitalize(this.context.user.lastname)}
+                                {utils.capitalize(this.props.user.firstName)} {utils.capitalize(this.props.user.lastName)}
                             </div>
                         </div>
                         <div className={styles.cubesDiv}>
@@ -80,4 +80,11 @@ class Customer extends Component {
     }
 }
 
-export default Customer;
+
+const mapStateToProps = state => {
+    return {
+        user: state.user
+    }
+}
+
+export default connect(mapStateToProps, null)(Customer);

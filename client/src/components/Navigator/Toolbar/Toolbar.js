@@ -1,6 +1,5 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
-import UserContext from '../../../context/user-context';
 import styles from './Toolbar.module.css';
 import Tabs from '../../Tabs/Tabs';
 import IconLabel from '../IconLabel/IconLabel';
@@ -8,9 +7,9 @@ import Person from '@material-ui/icons/Person';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import Fingerprint from '@material-ui/icons/Fingerprint';
 import SearchPanel from '../../SearchPanel/SearchPanel';
+import { connect } from 'react-redux';
 
 const Toolbar = (props) => {
-    const userContext = useContext(UserContext);
     const iconStyle = { color: "#d8f3dc", fontSize: "40px", margin: "1%" }
     const fingerStyle = { color: "#e63946", fontSize: "40px", margin: "1%" }
     const searchStyle = {
@@ -30,12 +29,12 @@ const Toolbar = (props) => {
             <div className={styles.buttonPanelStyle}>
                 <SearchPanel toolbarInput={styles.toolbarInput} cartSection={styles.cartSection} css={iconStyle, searchStyle} search={(e) => props.searchProduct(e)} />
 
-                {userContext.user.admin == "0" ? null :
+                { props.admin ? 
                     <div className={styles.cartSection}>
                         <NavLink to="/manage">
                             <Fingerprint style={fingerStyle} />
                         </NavLink>
-                    </div>
+                    </div> : null
                 }
 
                 <IconLabel text={props.cartSize} labelClick="/cart" href="/cart">
@@ -50,6 +49,11 @@ const Toolbar = (props) => {
     )
 }
 
+const mapStateToProps = state => {
+    return {
+        admin: state.user.admin,
+        cartSize: state.cart.items.length
+    }
+}
 
-
-export default Toolbar;
+export default connect(mapStateToProps)(Toolbar);

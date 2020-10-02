@@ -1,14 +1,13 @@
-import React, { useContext } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
 import Title from '../../Logo/Logo';
 import Toolbar from '../Toolbar/Toolbar';
 import Errorbar from '../Errorbar/Errorbar';
-import UserContext from '../../../context/user-context';
 
 import './Navbar.css';
 
 const Navbar = (props) => {
-    const userContext = useContext(UserContext);
-    const style = [userContext.user.admin == 1 ? "admin" : "user", "nav"].join(" ")
+    const style = [props.admin ? "admin" : "user", "nav"].join(" ")
     const showErrorBar = props.error != '' ? true: false;
     return (
         <div>
@@ -16,10 +15,6 @@ const Navbar = (props) => {
                 <Title />
                 <Toolbar
                     tabs={props.tabs}
-                    menuFunc={(nav) => props.menuFunc(nav)}
-                    page={props.page}
-                    cartSize={props.cartSize}
-                    viewPage={(p) => props.viewPage(p)}
                     searchProduct={(e) => props.searchProduct(e)}
                     logout={() => props.logout()} />
             </div>
@@ -28,4 +23,11 @@ const Navbar = (props) => {
     )
 }
 
-export default Navbar;
+
+const mapStateToProps = state => {
+    return {
+        admin: state.user.admin
+    }
+}
+
+export default connect(mapStateToProps)(Navbar);
