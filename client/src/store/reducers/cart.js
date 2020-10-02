@@ -48,7 +48,6 @@ const reducer = (state = initialState, action) => {
                 items: updateCart,
                 delivery: state.delivery
             }
-
         case actionsTypes.REMOVE_PRODUCT_FROM_CART:
             let removeProduct = action.value;
             let idxProduct = updateCart.findIndex(x => x.name == removeProduct.name)
@@ -68,6 +67,7 @@ const reducer = (state = initialState, action) => {
                     delivery: state.delivery
                 }
             }
+            break;
         case actionsTypes.INC_PRODUCT_IN_CART:
             let inc_product = action.value;
             updateCart.filter(x => x.name == inc_product.item.name).map(x => { x.count++; x.supply-- })
@@ -96,6 +96,7 @@ const reducer = (state = initialState, action) => {
                     delivery: state.delivery
                 }
             }
+            break;
     }
     return state;
 }

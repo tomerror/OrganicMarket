@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 
 import userReducer from './store/reducers/user';
 import cartReducer from './store/reducers/cart';
@@ -17,7 +17,20 @@ const rootReducer = combineReducers({
   products: productsReducer
 });
 
-const store = createStore(rootReducer);
+const logger = store => {
+  return next => {
+    return action => {
+      console.log('[Dispatching]', action)
+      const result = next(action)
+      console.log('next state', store.getState())
+      return result;
+    }
+  }
+}
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(logger)));
 
 ReactDOM.render(
   <React.StrictMode>
