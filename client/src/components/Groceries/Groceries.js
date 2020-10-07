@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import Products from '../Products/Products';
 import styles from './Groceries.module.css';
 import { connect } from 'react-redux';
-import * as actionTypes from '../../store/actions';
+import { addProductToCart, removeProductFromCart } from '../../store/actions/index';
 
 const Groceries = (props) => {
     if (props.user.username == undefined) {
@@ -43,8 +43,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        addProductToCart: (product) => dispatch({ type: actionTypes.ADD_PRODUCT_TO_CART, value: product }),
-        removeProductToCart: (product) => dispatch({ type: actionTypes.REMOVE_PRODUCT_FROM_CART, value: product })
+        addProductToCart: (product) => dispatch(addProductToCart(product)),
+        removeProductToCart: (product) => dispatch(removeProductFromCart(product))
     }
 }
 

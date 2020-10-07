@@ -7,7 +7,7 @@ import { Cubes, History } from '../../components';
 import utils from '../../utils';
 
 import { connect } from 'react-redux';
-import * as actionTypes from '../../store/actions';
+import * as actionCreators from '../../store/actions/index';
 
 class Customer extends Component {
     state = {
@@ -22,19 +22,7 @@ class Customer extends Component {
 
     getPayments = () => {
         this.props.clearError();
-        axios({
-            method: 'post',
-            url: 'http://localhost:4000/payment/getPayments',
-            headers: {},
-            data: { username: this.props.user.username, password: this.props.user.password }
-        }).then((response) => {
-            this.setState({ orders: response.data })
-        }, (error) => {
-            let err = ''
-            try { err = error.response.data }
-            catch (error) { err = "A problem occurred at the server. Please try later" }
-            finally { this.props.setError(err) }
-        })
+        this.props.fetchPaymentHistory(this.props.user.username, this.props.user.password);
     }
 
     render() {
@@ -46,17 +34,15 @@ class Customer extends Component {
         }, {
             title: "Transactions",
             color: styles.c84a98c,
-            message: this.state.orders.length
+            message: this.props.user.paymentHistory.length
         }, {
             title: "Email",
             color: styles.c52796f,
-            message: "dd",//this.context.user.email.split('@')[0],
-            submessage: "dd",//'@' + this.context.user.email.split('@')[1]
+            message: this.props.user.email
         }, {
             title: "Address",
             color: styles.c354f52,
-            message: "dd",//this.context.user.address.split(',')[0],
-            submessage: "dd",//this.context.user.address.split(',')[1]
+            message: this.props.user.address
         }]
 
 
@@ -72,7 +58,7 @@ class Customer extends Component {
                         <div className={styles.cubesDiv}>
                             <Cubes cubes={cubes} />
                         </div>
-                        <History orders={this.state.orders} />
+                        <History orders={this.props.user.paymentHistory} />
                     </div>
                 }
             </div>
@@ -87,4 +73,10 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps, null)(Customer);
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchPaymentHistory: (username, password) => dispatch(actionCreators.fetchPaymentHistory(username, password))
+    }
+  }
+  
+export default connect(mapStateToProps, mapDispatchToProps)(Customer);

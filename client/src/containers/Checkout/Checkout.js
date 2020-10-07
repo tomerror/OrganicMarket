@@ -5,7 +5,7 @@ import cookie from 'react-cookies';
 import { Cart } from '../../components';
 import './Checkout.css';
 import { connect } from 'react-redux';
-import * as actionTypes from '../../store/actions';
+import  { initCart, incProductInCart, decProductInCart } from '../../store/actions/index';
 
 class Checkout extends Component {
     sendPayment = () => {
@@ -103,9 +103,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        inc_product_in_cart: (product) => dispatch({ type: actionTypes.INC_PRODUCT_IN_CART, value: product }),
-        dec_product_in_cart: (product) => dispatch({ type: actionTypes.DEC_PRODUCT_IN_CART, value: product }),
-        init_cart: () => dispatch({type: actionTypes.INIT_CART})
+        inc_product_in_cart: (product) => dispatch(incProductInCart(product)),
+        dec_product_in_cart: (product) => dispatch(decProductInCart(product)),
+        init_cart: () => dispatch(initCart())
     }
 }
 

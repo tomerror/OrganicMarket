@@ -1,4 +1,4 @@
-import * as actionsTypes from '../actions';
+import * as actionsTypes from '../actions/actionTypes';
 
 const initialState = {
     username: '',
@@ -8,7 +8,10 @@ const initialState = {
     email: '',
     address: '',
     admin: false,
-    creation_date: ''
+    creation_date: '',
+    error: '',
+    logs: [],
+    paymentHistory: []
 }
 
 
@@ -17,6 +20,7 @@ const reducer = (state = initialState, action) => {
     switch (action.type) {
         case actionsTypes.SET_NEW_USER:
             return {
+                ...state,
                 username: action.payload.username,
                 password: action.payload.password,
                 firstName: action.payload.firstName,
@@ -28,6 +32,7 @@ const reducer = (state = initialState, action) => {
             }
         case actionsTypes.LOGOUT_USER:
             return {
+                ...state,
                 username: '',
                 password: '',
                 firstName: '',
@@ -36,6 +41,21 @@ const reducer = (state = initialState, action) => {
                 address: '',
                 admin: false,
                 creation_date: ''
+            }
+        case actionsTypes.FETCH_DETAILS_FAILED:
+            return {
+                ...state,
+                error: action.error
+            }
+        case actionsTypes.FETCH_ADMIN_DATA:
+            return {
+                    ...state,
+                    logs: action.logs
+                }
+        case actionsTypes.FETCH_PAYMENT_HISTORY:
+            return {
+                ...state,
+                paymentHistory: action.value
             }
     }
     return state;

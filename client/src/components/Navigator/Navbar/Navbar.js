@@ -26,7 +26,8 @@ const Navbar = (props) => {
 
 const mapStateToProps = state => {
     return {
-        admin: state.user.admin
+        admin: state.user.admin,
+        error: state.products.error
     }
 }
 

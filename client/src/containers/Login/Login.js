@@ -6,7 +6,7 @@ import LockIcon from '@material-ui/icons/Lock';
 import { Signin, Signup, LoginFooter } from '../../components';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import * as actionTypes from '../../store/actions';
+import * as actionCreators from '../../store/actions/index';
 
 class Login extends Component {
     state = {
@@ -112,9 +112,11 @@ class Login extends Component {
                 cookie.save('password', user.password, { path: '/', maxAge: 60 * 30 })
             }
         }
-        this.props.login().then(response => {
-            this.props.history.push(`/shop/${response}`);
-        });
+        this.props.login();
+        this.props.history.push(`/shop/${this.props.firstProduct}`);
+        // this.props.login().then(response => {
+        //     this.props.history.push(`/shop/${response}`);
+        // });
 
     }
 
@@ -159,21 +161,26 @@ class Login extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+      firstProduct: state.products.products[0]
+    }
+  }
+
 const mapDispatchToProps = dispatch => {
     return {
-        setNewUser: (user) => dispatch({
-            type: actionTypes.SET_NEW_USER, payload: {
-                username: user.username,
-                password: user.password,
-                firstName: user.firstname,
-                lastName: user.lastname,
-                email: user.email,
-                address: user.address,
-                admin: user.admin == "1" ? true : false,
-                creation_date: user.creation_date
-            }
-        })
+        setNewUser: user => dispatch(actionCreators.setNewUser({
+            username: user.username,
+            password: user.password,
+            firstName: user.firstname,
+            lastName: user.lastname,
+            email: user.email,
+            address: user.address,
+            admin: user.admin == "1" ? true : false,
+            creation_date: user.creation_date
+        }))
     }
 }
 
-export default connect(null, mapDispatchToProps)(Login);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

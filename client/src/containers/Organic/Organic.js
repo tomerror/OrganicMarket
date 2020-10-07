@@ -2,62 +2,62 @@ import React, { Component } from 'react';
 import cookie from 'react-cookies';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Login from '../Login/Login';
-import axios from 'axios';
 import { Navbar, Groceries, Readme, Sidebar } from '../../components';
-//import UserContext from '../../context/user-context';
 import { Checkout, Manage, Customer } from '../../containers';
 import utils from '../../utils';
 import { connect } from 'react-redux';
-import * as actionTypes from '../../store/actions';
+import * as actionCreators from '../../store/actions/index';
 
 class Organic extends Component {
   state = {
     logged: false,
     search: '',
-    tabs: [],
-    error: ''
+    tabs: []
   }
 
-  setUser = (u) => {
-    this.setState({ user: u, logged: true })
-  }
+  // setUser = (u) => {
+  //   this.setState({ user: u, logged: true })
+  // }
 
-  setCart = (cart) => {
-    cookie.save(`cart:${this.props.user.username}`, JSON.stringify(cart), { path: `/` })
-    this.setState({ cart: cart });
-    this.props.onIncrementCounter();
-  }
+  // setCart = (cart) => {
+  //   cookie.save(`cart:${this.props.user.username}`, JSON.stringify(cart), { path: `/` })
+  //   this.setState({ cart: cart });
+  //   this.props.onIncrementCounter();
+  // }
 
   getData = () => {
-    return new Promise((resolve, reject) => {
-      axios({
-        method: 'post',
-        url: `http://localhost:4000/data/shop`,
-        data: { username: this.props.user.username, password: this.props.user.password }
-      })
-        .then((response) => {
-          this.props.addProduct(response.data)
-          //this.setState({ products: response.data })
-          if (cookie.load(`cart:${this.props.user.username}`) != undefined) {
-            const tempCart = cookie.load(`cart:${this.props.user.username}`)
-            this.setState({ cart: tempCart })
-            this.updateCartOnAdminChanges()
-          }
-          this.setTabs()
-          this.setState({ logged: true })
-          resolve(this.state.tabs[0])
-        }, (error) => {
-          let err = ''
-          try { err = error.response.data }
-          catch (error) { err = "A problem occurred at the server. Please try later" }
-          finally { this.setState({ error: err }) }
-        })
-    })
-  }
+    this.props.getProducts(this.props.user.username, this.props.user.password);
+    if (cookie.load(`cart:${this.props.user.username}`) != undefined) {
+      const tempCart = cookie.load(`cart:${this.props.user.username}`)
+      this.setState({ cart: tempCart })
+      this.updateCartOnAdminChanges()
+    }
+    this.setState({ logged: true })
+    // return new Promise((resolve, reject) => {
+    //   axios({
+    //     method: 'post',
+    //     url: `http://localhost:4000/data/shop`,
+    //     data: { username: this.props.user.username, password: this.props.user.password }
+    //   })
+    //     .then((response) => {
+    //       //this.props.getProducts(this.props.user.username, this.props.user.password)
+    //       this.props.addProduct(response.data)
 
-  setTabs = () => {
-    let filter = utils.reduceDuplicate(this.props.products)
-    this.setState({ tabs: filter })
+    //       if (cookie.load(`cart:${this.props.user.username}`) != undefined) {
+    //         const tempCart = cookie.load(`cart:${this.props.user.username}`)
+    //         this.setState({ cart: tempCart })
+    //         this.updateCartOnAdminChanges()
+    //       }
+    //       this.setTabs()
+    //       this.setState({ logged: true })
+    //       resolve(this.state.tabs[0])
+    //     }, (error) => {
+    //       let err = ''
+    //       try { err = error.response.data }
+    //       catch (error) { err = "A problem occurred at the server. Please try later" }
+    //       finally { this.setState({ error: err }) }
+    //     })
+    // })
   }
 
   updateCartOnAdminChanges = () => {
@@ -110,28 +110,19 @@ class Organic extends Component {
   }
 
   render() {
-    let tabs = []
-    if (this.state.tabs.length > 0) {
-      tabs = utils.reduceDuplicate(this.props.products)
-    }
+    let tabs = utils.reduceDuplicate(this.props.products)
+    
     return (
       <div>
         {this.props.user.username == '' ? <Redirect to="/login" /> : null}
         {this.state.logged ?
-          <Navbar tabs={tabs} searchProduct={(e) => this.searchProduct(e)} logout={() => this.logout()} error={this.state.error} /> 
+          <Navbar tabs={tabs} searchProduct={(e) => this.searchProduct(e)} logout={() => this.logout()} />
           : null}
         <Switch>
           <Route path="/login" exact render={(props) => <Login {...props} login={() => this.getData()} />} />
           <Route path="/shop/:category" render={(props) => <Groceries {...props} filter={this.state.search} />} />
           <Route path="/cart" exact render={(props) => <Checkout {...props} />} />
-          <Route path="/manage" exact
-            render={(props) =>
-              <Manage {...props}
-                setError={(e) => this.setError(e)}
-                clearError={() => this.clearError()}
-                productTabs={this.state.tabs}
-                reloadProduct={() => this.getData()}
-              />} />
+          <Route path="/manage" exact render={(props) => <Manage {...props} productTabs={tabs} />} />
           <Route path="/customer" exact
             render={(props) => <Customer {...props} setError={(e) => this.setError(e)} clearError={() => this.clearError()} />} />
           <Route path="/readme" exact render={() => <Readme />} />
@@ -152,8 +143,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    addProduct: (products) => dispatch({ type: actionTypes.ADD_PRODUCT, products: products }),
-    logoutUser: () => dispatch({type: actionTypes.LOGOUT_USER})
+    getProducts: (username, password) => dispatch(actionCreators.getProducts(username, password)),
+    logoutUser: () => dispatch(actionCreators.logoutUser())
   }
 }
 

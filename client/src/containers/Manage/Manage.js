@@ -1,170 +1,67 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import styles from './Manage.module.css';
-import axios from 'axios';
 import { Logger, Items, Panel } from '../../components';
 import { connect } from 'react-redux';
-import * as actionTypes from '../../store/actions';
+import * as actionCreators from '../../store/actions/index';
 
+import utils from '../../utils';
 class Manage extends Component {
     state = {
-        logs: [],
-        filterLogs: [],
-        tabs: [],
-        filterProducts: [],
-        redirect: null
+        filterLog: '',
+        category: ''
     }
 
     componentDidMount = () => {
-        console.log(this.props);
         this.getPanel();
     }
 
     getPanel = () => {
-        this.props.clearError();
-        axios({
-            method: 'post',
-            url: 'http://localhost:4000/manage/getPanel',
-            headers: {},
-            data: { username: this.props.user.username, password: this.props.user.password }
-        }).then((response) => {
-            this.setState({ logs: response.data, filterLogs: response.data })
-            const tabs = []
-            this.state.logs.map((l) => { if (!tabs.includes(l.username)) { tabs.push(l.username) } })
-            this.setState({ tabs: tabs })
-        }, (error) => {
-            let err = ''
-            try { this.setState({ redirect: '/' }) }
-            catch (error) { err = "A problem occurred at the server. Please try later" }
-            finally { this.props.setError(err) }
-        })
+        this.props.fetchAdminData(this.props.user.username, this.props.user.password);
     }
 
     setDiscount = (product) => {
-        this.props.clearError();
-        axios({
-            method: 'post',
-            url: 'http://localhost:4000/manage/discount',
-            headers: {},
-            data: { username: this.props.user.username, password: this.props.user.password, product: product }
-        }).then((response) => {
-            this.props.reloadProduct();
-            this.updateDiscount(product);
-        }, (error) => {
-            let err = ''
-            try { this.setState({ redirect: '/' }) }
-            catch (error) { err = "A problem occurred at the server. Please try later" }
-            finally { this.props.setError(err) }
-        })
+        this.props.setProductDiscount(this.props.user.username, this.props.user.password, product);
     }
 
     setShow = (product) => {
-        this.props.clearError();
-        axios({
-            method: 'post',
-            url: 'http://localhost:4000/manage/productVisibility',
-            headers: {},
-            data: { username: this.props.user.username, password: this.props.user.password, product: product }
-        }).then((response) => {
-            this.props.reloadProduct();
-            this.updateVisibility(product);
-        }, (error) => {
-            let err = ''
-            try { this.setState({ redirect: '/' }) }
-            catch (error) { err = "A problem occurred at the server. Please try later" }
-            finally { this.props.setError(err) }
-        })
+        this.props.toggleProductVisibility(this.props.user.username, this.props.user.password, product);
     }
 
     counterInc = (product) => {
-        this.props.clearError();
-        axios({
-            method: 'post',
-            url: 'http://localhost:4000/manage/supplyInc',
-            headers: {},
-            data: { username: this.props.user.username, password: this.props.user.password, product: product.display }
-        }).then((response) => {
-            this.props.reloadProduct();
-            this.updateSupply(product.display, 1);
-        }, (error) => {
-            let err = ''
-            try { this.setState({ redirect: '/' }) }
-            catch (error) { err = "A problem occurred at the server. Please try later" }
-            finally { this.props.setError(err) }
-        })
+        this.props.incrementProductSupply(this.props.user.username, this.props.user.password, product.display)
     }
 
     counterDec = (product) => {
-        this.props.clearError();
         if (product.supply > 0) {
-            axios({
-                method: 'post',
-                url: 'http://localhost:4000/manage/supplyDec',
-                headers: {},
-                data: { username: this.props.user.username, password: this.props.user.password, product: product.display }
-            }).then((response) => {
-                this.props.reloadProduct();
-                this.updateSupply(product.display, -1);
-            }, (error) => {
-                let err = ''
-                try { err = error.response.data }
-                catch (error) { err = "A problem occurred at the server. Please try later" }
-                finally { this.props.setError(err) }
-            })
+            this.props.decrementProductSupply(this.props.user.username, this.props.user.password, product.display)
         }
     }
 
-    updateSupply = (name, diff) => {
-        let products = this.state.filterProducts.map((product) => {
-            let editProduct = product
-            if (product.display == name) {
-                editProduct.supply = parseInt(product.supply) + diff
-            }
-            return editProduct
-        })
-        this.setState({ filterProducts: products })
-    }
-
-    changeSection = (section) => {
-        this.setState({ filterLogs: this.state.logs.filter((log) => log.username == section.toLowerCase()) })
+    changeSection = (value) => {
+        this.setState({ filterLog: value })
     }
 
     changeProducts = (value) => {
-        this.setState({ productTab: value })
-        this.setState({ filterProducts: this.props.products.filter((product) => product.type == value.toLowerCase()) })
-    }
-
-    updateDiscount = (name) => {
-        let products = this.state.filterProducts.map((product) => {
-            let editProduct = product
-            if (product.display == name) {
-                editProduct.discount = product.discount == 1 ? 0 : 1
-            }
-            return editProduct
-        })
-        this.setState({ filterProducts: products })
-    }
-
-    updateVisibility = (name) => {
-        let products = this.state.filterProducts.map((product) => {
-            let editProduct = product
-            if (product.display == name) {
-                editProduct.show = product.show == "true" ? "false" : "true"
-            }
-            return editProduct
-        })
-        this.setState({ filterProducts: products })
+        this.setState({ category: value })
     }
 
     render = () => {
-        if (this.state.redirect) {
-            return <Redirect to={this.state.redirect} />
+        let filterLogs = []
+        if(this.state.filterLog == ''){
+            filterLogs = this.props.user.logs;
+        } else {
+            filterLogs = this.props.user.logs.filter(log => log.username == this.state.filterLog.toLowerCase());
         }
 
-        const logs = this.state.filterLogs.map((log, key) => {
+        const logs = filterLogs.map((log, key) => {
             return <Logger log={log} key={key} />
         })
 
+        let filterProducts = this.props.products.filter(product => product.type == this.state.category.toLowerCase())
+        
+        let tabs = utils.reduceDuplicateByUsername(this.props.user.logs)
+        
         return (
             <div>
                 { this.props.user.username == '' ? <Redirect to="/login" /> :
@@ -172,7 +69,7 @@ class Manage extends Component {
                         <Panel title="System Logs"
                             dropFunc={(e) => this.changeSection(e.target.value)}
                             select="Choose:"
-                            droplist={this.state.tabs}>
+                            droplist={tabs}>
                             {logs}
                         </Panel>
 
@@ -181,7 +78,7 @@ class Manage extends Component {
                             select="Choose:"
                             droplist={this.props.productTabs}>
 
-                            <Items items={this.state.filterProducts}
+                            <Items items={filterProducts}
                                 panel={true}
                                 counterInc={(p) => this.counterInc(p)}
                                 counterDec={(p) => this.counterDec(p)}
@@ -200,6 +97,15 @@ const mapStateToProps = state => {
         user: state.user,
         products: state.products.products
     }
-}
+}    
 
-export default connect(mapStateToProps, null)(Manage);
+const mapDispatchToProps = dispatch => {
+    return {
+        setProductDiscount: (username, password, product) => dispatch(actionCreators.setProductDiscount(username, password, product)),
+        toggleProductVisibility: (username, password, product) => dispatch(actionCreators.toggleProductVisibility(username, password, product)),
+        incrementProductSupply: (username, password, product) => dispatch(actionCreators.incrementProductSupply(username, password, product)),
+        decrementProductSupply: (username, password, product) => dispatch(actionCreators.decrementProductSupply(username, password, product)),
+        fetchAdminData: (username, password) => dispatch(actionCreators.fetchAdminData(username, password))
+    }
+  }
+export default connect(mapStateToProps, mapDispatchToProps)(Manage);

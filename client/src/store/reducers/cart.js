@@ -1,10 +1,11 @@
-import * as actionsTypes from '../actions';
+import * as actionsTypes from '../actions/actionTypes';
 
 const initialState = {
     amount: 0,
     count: 0,
     items: [],
-    delivery: 50
+    delivery: 50,
+    error: false
 }
 
 
@@ -15,10 +16,10 @@ const reducer = (state = initialState, action) => {
     switch (action.type) {
         case actionsTypes.INIT_CART:
             return {
+                ...state,
                 amount: 0,
                 count: 0,
-                items: [],
-                delivery: 50
+                items: []
             }
         case actionsTypes.ADD_PRODUCT_TO_CART:
             let addProduct = action.value;
@@ -43,10 +44,10 @@ const reducer = (state = initialState, action) => {
             }
             amount = parseFloat((state.amount + addProduct.weight * (addProduct.price - addProduct.discount * 0.1 * addProduct.price)).toFixed(2))
             return {
+                ...state,
                 amount: amount,
                 count: state.count + 1,
-                items: updateCart,
-                delivery: state.delivery
+                items: updateCart
             }
         case actionsTypes.REMOVE_PRODUCT_FROM_CART:
             let removeProduct = action.value;
@@ -61,24 +62,24 @@ const reducer = (state = initialState, action) => {
                 }
                 amount = parseFloat((state.amount - removeProduct.weight * (removeProduct.price - removeProduct.discount * 0.1 * removeProduct.price)).toFixed(2))
                 return {
+                    ...state,
                     amount: amount,
                     count: state.count - 1,
-                    items: updateCart,
-                    delivery: state.delivery
+                    items: updateCart
                 }
             }
             break;
-        case actionsTypes.INC_PRODUCT_IN_CART:
+        case actionsTypes.INCREMENT_PRODUCT_IN_CART:
             let inc_product = action.value;
             updateCart.filter(x => x.name == inc_product.item.name).map(x => { x.count++; x.supply-- })
             amount = parseFloat((state.amount + inc_product.item.details.weight * (inc_product.item.details.price)).toFixed(2))
             return {
+                ...state,
                 amount: amount,
                 count: state.count + 1,
-                items: updateCart,
-                delivery: state.delivery
+                items: updateCart
             }
-        case actionsTypes.DEC_PRODUCT_IN_CART:
+        case actionsTypes.DECREMENT_PRODUCT_IN_CART:
             let dec_product = action.value;
             let idx = updateCart.findIndex(x => x.name == dec_product.item.name)
             if (idx != -1) {
@@ -90,13 +91,18 @@ const reducer = (state = initialState, action) => {
                 }
                 amount = parseFloat((state.amount - dec_product.item.details.weight * (dec_product.item.details.price - dec_product.item.details.discount * 0.1 * dec_product.item.details.price)).toFixed(2))
                 return {
+                    ...state,
                     amount: amount,
                     count: state.count - 1,
-                    items: updateCart,
-                    delivery: state.delivery
+                    items: updateCart
                 }
             }
             break;
+        case actionsTypes.UPDATE_CART_FAILED:
+                return {
+                    ...state,
+                    error: action.value
+                }
     }
     return state;
 }
