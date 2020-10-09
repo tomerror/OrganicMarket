@@ -1,5 +1,6 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import cookie from 'react-cookies';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import Products from '../Products/Products';
 import styles from './Groceries.module.css';
 import { connect } from 'react-redux';
@@ -11,18 +12,18 @@ const Groceries = (props) => {
     }
 
     let products = []
-    if (props.products.length != undefined) {
+    if (props.products.length != 0) {
         let productView = [];
         if (props.filter != '') {
             productView = props.products.filter(product => product.display.toLowerCase().includes(props.filter))
         } else {
-            productView = props.products.filter(product => product.type == props.match.params.category.toLowerCase())
+            productView = props.products.filter(product => product.category == props.match.params.category.toLowerCase())
         }
         products = <Products
             products={productView}
-            cart={props.cart}
-            counterInc={(product) => props.addProductToCart(product)}
-            counterDec={(product) => props.removeProductToCart(product)}
+            cart={props.cart.cart}
+            counterInc={(product) => props.addProductToCart(props.user.username, product)}
+            counterDec={(product) => props.removeProductToCart(props.user.username, product)}
         />
     }
 
@@ -43,8 +44,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        addProductToCart: (product) => dispatch(addProductToCart(product)),
-        removeProductToCart: (product) => dispatch(removeProductFromCart(product))
+        addProductToCart: (user, product) => dispatch(addProductToCart(user, product)),
+        removeProductToCart: (user, product) => dispatch(removeProductFromCart(user, product))
     }
 }
 

@@ -4,7 +4,7 @@ module.exports = {
     },
     reduceDuplicate(arr){
         let tabsArr = [];
-        arr.map((p) => { if (!tabsArr.includes(this.capitalize(p.type))) { tabsArr.push(this.capitalize(p.type)) } })
+        arr.map((p) => { if (!tabsArr.includes(this.capitalize(p.category))) { tabsArr.push(this.capitalize(p.category)) } })
         return tabsArr;
     },
     reduceDuplicateByUsername(arr){

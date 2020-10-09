@@ -21,7 +21,7 @@ const order = (props) => {
                         total:
                     </div>
                     <div className={styles.price}>
-                        &#8362;{parseFloat(+props.order.amount+(+props.order.delivery)).toFixed(2)}
+                        &#8362;{props.order.amount().toFixed(2)}
                     </div>
                 </div>
             </div>

@@ -2,6 +2,7 @@ const redisWriter = require('./redisWriter');
 const redisReader = require('./redisReader');
 const utils = require('./organicUtils');
 const config = require('../../config.json');
+const { Item, Cart } = require('organic-structures');
 
 // Reader
 const checkAuthentication = async (username, password) => {
@@ -31,37 +32,39 @@ const getShop = async () => {
 
 const getItem = (username, productKey) => {
     return new Promise(async (resolve, reject) => {
-        let details = await redisReader.getHashAll(`${productKey}` + config.getItemSuffix);
         let product = await redisReader.getHashAll(`${productKey}`);
-
-        let tempItem = {
-            category: product.category,
-            count: product.count,
-            display: product.display,
-            name: product.name,
-            details: {
-                img: details.img,
-                price: details.price,
-                weight: details.weight,
-                discount: details.discount
-            }
-        }
+        let tempItem = new Item(product);
+        // let tempItem = {
+        //     category: product.category,
+        //     count: product.count,
+        //     display: product.display,
+        //     name: product.name,
+        //     details: {
+        //         img: details.img,
+        //         price: details.price,
+        //         weight: details.weight,
+        //         discount: details.discount
+        //     }
+        // }
         resolve(tempItem)
     })
 }
 
 const getCart = (username, date) => {
     return new Promise(async (resolve, reject) => {
-        let details = await redisReader.getHashAll(`cart:${username}:${date}:details`);
-        let tempCart = {
-            amount: details.amount,
-            count: details.count,
-            delivery: details.delivery,
-            time: details.time,
-            items: []
-        }
+        //let details = await redisReader.getHashAll(`cart:${username}:${date}:details`);
+        //let tempCart = new Cart();
+
+        // Fetch all times that user made pay
         let keys = await redisReader.getKeys(`cart:${username}:${date}:products:*`);
         let products = utils.groupByDate(keys, 4)
+
+        let tempCart = {
+            delivery: 50,
+            time: date,
+            items: []
+        }
+        // Fetch all product by specific time
         for (let i = 0; i < products.length; i++) {
             let product = await getItem(username, `cart:${username}:${date}:products:${products[i]}`);
             tempCart.items.push(product);
@@ -73,9 +76,11 @@ const getCart = (username, date) => {
 
 const getPayments = async (username) => {
     return new Promise(async (resolve, reject) => {
+        // Fetch all user's payment keys
         let keys = await redisReader.getKeys(config.getCartPrefix + `${username}:*`);
         let dates = utils.groupByDate(keys, 2);
         let payments = []
+        // Fetch all carts by keys
         for (let i = 0; i < dates.length; i++) {
             let payment = await getCart(username, dates[i]);
             payments.push(payment)
@@ -106,7 +111,7 @@ const getLogs = async () => {
 
 const setCartDetails = (key, cart, time) => {
     redisWriter.setHash(`${key}:details`, {
-        'amount': `${cart.amount}`,
+        // 'amount': `${cart.amount}`,
         'count': `${cart.count}`,
         'delivery': `${cart.delivery}`,
         'time': `${time}`
@@ -122,19 +127,22 @@ const setCartProducts = async (key, item) => {
         'category': `${item.category}`,
         'name': `${item.name}`,
         'display': `${item.display}`,
-        'count': `${count}`
+        'count': `${count}`,
+        'image': `${item.image}`,
+        'price': `${item.price}`,
+        'weight': `${item.weight}`,
+        'discount': `${item.discount}`
     })
-
     return refund;
 }
 
 const setProductDetails = (key, item) => {
-    redisWriter.setHash(`${key}:products:${item.display}:details`, {
-        'img': `${item.details.img}`,
-        'price': `${item.details.price}`,
-        'weight': `${item.details.weight}`,
-        'discount': `${item.details.discount}`
-    })
+    // redisWriter.setHash(`${key}:products:${item.display}:details`, {
+    //     'img': `${item.details.img}`,
+    //     'price': `${item.details.price}`,
+    //     'weight': `${item.details.weight}`,
+    //     'discount': `${item.details.discount}`
+    // })
 }
 
 const setLog = (log) => {
@@ -177,7 +185,7 @@ const setVisibility = async (product) => {
 }
 
 const supplyIncStack = async (product, rounds) => {
-    for(let i=0; i<rounds; i++){
+    for (let i = 0; i < rounds; i++) {
         await supplyInc(product)
     }
 }
@@ -190,7 +198,7 @@ const supplyInc = async (product) => {
 }
 
 const supplyDecStack = async (product, rounds) => {
-    for(let i=0; i<rounds; i++){
+    for (let i = 0; i < rounds; i++) {
         await supplyDec(product)
     }
 }
@@ -199,12 +207,12 @@ const supplyDec = async (product) => {
     let key = `shop:${product}`
     let field = 'supply'
     let value = parseInt((await redisReader.getHashField(key, field))[0]) - 1;
-    if(value >= 0){
+    if (value >= 0) {
         redisWriter.deleteHashField(key, field)
         redisWriter.setHashField(key, field, value)
-    } else{
+    } else {
         throw 'The supply is empty'
-    }    
+    }
 }
 
 module.exports = {

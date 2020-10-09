@@ -11,7 +11,7 @@ const Product = (props) => {
             {props.item.show == "true" ?
                 <div  className="product" >
                     <div style={{ height: "70%" }} >
-                        <img src={`http://localhost:4000/img/${props.item.type}/${props.item.img}`} className="product-img" />
+                        <img src={`http://localhost:4000/img/${props.item.category}/${props.item.image}`} className="product-img" />
                     </div>
                     <div className="product-name">
                         <p>{props.item.display}</p>

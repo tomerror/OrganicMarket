@@ -1,4 +1,5 @@
 import * as actionsTypes from '../actions/actionTypes';
+import { Cart, Item } from 'organic-structures';
 
 const initialState = {
     username: '',
@@ -14,8 +15,6 @@ const initialState = {
     paymentHistory: []
 }
 
-
-// push is bad practice. instead we should create a new copy by concat and not rely on the original as push does.
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case actionsTypes.SET_NEW_USER:
@@ -49,13 +48,24 @@ const reducer = (state = initialState, action) => {
             }
         case actionsTypes.FETCH_ADMIN_DATA:
             return {
-                    ...state,
-                    logs: action.logs
-                }
+                ...state,
+                logs: action.logs
+            }
         case actionsTypes.FETCH_PAYMENT_HISTORY:
+            let cartArray = []
+            action.value.forEach((cart) => {
+                let tempCart = new Cart();
+                tempCart.count = cart.count;
+                tempCart.delivery = cart.delivery;
+                cart.items.forEach(item => {
+                    let tempItem = new Item(item);
+                    tempCart.addItem(tempItem)
+                })
+                cartArray.push(tempCart)
+            })
             return {
                 ...state,
-                paymentHistory: action.value
+                paymentHistory: cartArray
             }
     }
     return state;

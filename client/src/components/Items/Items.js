@@ -3,9 +3,9 @@ import Item from '../Item/Item';
 
 const Items = (props) => props.items.map((item, index) => {
     return <Item 
-        category={item.type}
+        category={item.category}
         display={item.display}
-        img={item.img}
+        image={item.image}
         price={item.price}
         weight='1'
         count='1'

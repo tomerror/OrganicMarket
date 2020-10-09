@@ -10,7 +10,7 @@ const Item = ( props ) => {
         <div>
             <div className="item">
                 <div className="img">
-                    <img src={`http://localhost:4000/img/${props.category}/${props.img}`} className="checkout-img" />
+                    <img src={`http://localhost:4000/img/${props.category}/${props.image}`} className="checkout-img" />
                 </div>
                 <div className="details">
                     {props.display}

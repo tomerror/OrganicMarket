@@ -52,7 +52,7 @@ const Toolbar = (props) => {
 const mapStateToProps = state => {
     return {
         admin: state.user.admin,
-        cartSize: state.cart.items.length
+        cartSize: state.cart.cart.items.length
     }
 }
 

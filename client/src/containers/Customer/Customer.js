@@ -10,10 +10,6 @@ import { connect } from 'react-redux';
 import * as actionCreators from '../../store/actions/index';
 
 class Customer extends Component {
-    state = {
-        orders: []
-    }
-
     componentDidMount = () => {
         if(this.props.user.username != ''){
             this.getPayments();
@@ -21,7 +17,6 @@ class Customer extends Component {
     }
 
     getPayments = () => {
-        this.props.clearError();
         this.props.fetchPaymentHistory(this.props.user.username, this.props.user.password);
     }
 
@@ -65,7 +60,6 @@ class Customer extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {

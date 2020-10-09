@@ -1,37 +1,20 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import axios from 'axios';
-import cookie from 'react-cookies';
 import { Cart } from '../../components';
 import './Checkout.css';
 import { connect } from 'react-redux';
-import  { initCart, incProductInCart, decProductInCart } from '../../store/actions/index';
+import * as actionCreators from '../../store/actions/index';
 
 class Checkout extends Component {
     sendPayment = () => {
-        axios({
-            method: 'post',
-            url: 'http://localhost:4000/payment/setPayment',
-            headers: {},
-            data: { username: this.props.user.username, password: this.props.user.password, cart: this.props.cart }
-        }).then((response) => {
-            if (response) {
-                this.props.init_cart()
-                cookie.remove(`cart:${this.props.user.username}`, { path: '/' })
-            }
-        }, (error) => {
-            let err = ''
-            try { err = error.response.data }
-            catch (error) { err = "A problem occurred at the server. Please try later" }
-            finally { this.setState({ error: err }) }
-        });
+        this.props.pay(this.props.user.username, this.props.user.password, this.props.cart);
     }
 
     render = () => {
         const products = <Cart
             cart={this.props.cart}
-            counterInc={(p) => this.props.inc_product_in_cart(p)}
-            counterDec={(p) => this.props.dec_product_in_cart(p)} />
+            counterInc={(p) => this.props.addProductToCart(this.props.user.username, p)}
+            counterDec={(p) => this.props.removeProductToCart(this.props.user.username, p)} />
 
         const warning = this.props.cart.items.filter(product => product.supply < 0)
 
@@ -56,7 +39,7 @@ class Checkout extends Component {
                                                 Items total:
                                         </div>
                                             <div className="checkout-bill-amount">
-                                                &#8362; {this.props.cart.amount.toFixed(2)}
+                                                &#8362; {(this.props.cart.amount() - this.props.cart.delivery).toFixed(2)}
                                             </div>
                                         </div>
                                         <div className="checkout-bill-set">
@@ -73,7 +56,7 @@ class Checkout extends Component {
                                                 Total sum:
                                         </div>
                                             <div className="checkout-bill-amount total-amount">
-                                                &#8362; {(this.props.cart.amount + this.props.cart.delivery).toFixed(2)}
+                                                &#8362; {this.props.cart.amount().toFixed(2)}
                                             </div>
                                         </div>
                                         {warning.length > 0 ?
@@ -97,15 +80,15 @@ class Checkout extends Component {
 const mapStateToProps = state => {
     return {
         user: state.user,
-        cart: state.cart
+        cart: state.cart.cart
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        inc_product_in_cart: (product) => dispatch(incProductInCart(product)),
-        dec_product_in_cart: (product) => dispatch(decProductInCart(product)),
-        init_cart: () => dispatch(initCart())
+        addProductToCart: (user, product) => dispatch(actionCreators.addProductToCart(user, product)),
+        removeProductToCart: (user, product) => dispatch(actionCreators.removeProductFromCart(user, product)),
+        pay: (username, password, cart) => dispatch(actionCreators.pay(username, password, cart))
     }
 }
 

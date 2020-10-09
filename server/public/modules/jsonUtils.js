@@ -5,10 +5,10 @@ const json = require('../../data.json');
 const initGroceries = () => {
     json.shop.forEach((product) => {
         redisWriter.setHash(`shop:${product.display}`, {
-            'type': `${product.type}`,
+            'category': `${product.category}`,
             'name': `${product.name}`,
             'display': `${product.display}`, 
-            'img': `${product.img}`,
+            'image': `${product.image}`,
             'price': `${product.price}`,
             'weight': `${product.weight}`,
             'discount': `${product.discount}`,

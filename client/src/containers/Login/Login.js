@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import cookie from 'react-cookies';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 import styles from './Login.module.css';
 import LockIcon from '@material-ui/icons/Lock';
 import { Signin, Signup, LoginFooter } from '../../components';
@@ -113,11 +114,7 @@ class Login extends Component {
             }
         }
         this.props.login();
-        this.props.history.push(`/shop/${this.props.firstProduct}`);
-        // this.props.login().then(response => {
-        //     this.props.history.push(`/shop/${response}`);
-        // });
-
+        this.props.history.push(`/shop`);
     }
 
     render = () => {
@@ -129,7 +126,7 @@ class Login extends Component {
             formBody =
                 <Signup onChange={(e) => this.handleChange(e)} />
         }
-
+        
         return (
             <div>
                 <div className={styles.LeftPanel}>
@@ -163,9 +160,9 @@ class Login extends Component {
 
 const mapStateToProps = state => {
     return {
-      firstProduct: state.products.products[0]
+        firstProduct: state.products.products[0]
     }
-  }
+}
 
 const mapDispatchToProps = dispatch => {
     return {

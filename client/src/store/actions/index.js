@@ -15,7 +15,7 @@ export {
 export {
     addProductToCart,
     removeProductFromCart,
-    incProductInCart,
-    decProductInCart,
-    initCart
+    initCart,
+    pay,
+    loadCart
 } from './cart'

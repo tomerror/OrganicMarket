@@ -6,11 +6,11 @@ const Cart = (props) => props.cart.items.map((item, index) => {
         item={item}
         category={item.category}
         display={item.display}
-        img={item.details.img}
-        price={item.details.price}
-        weight={item.details.weight}
+        image={item.image}
+        price={item.price}
+        weight={item.weight}
         count={item.count}        
-        discount={item.details.discount}
+        discount={item.discount}
         inCart={
           props.cart.items.find(x => x.name == item.name) ? 
             props.cart.items.filter(x => x.name == item.name)[0].count : 0

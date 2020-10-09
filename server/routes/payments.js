@@ -20,14 +20,14 @@ router.post('/setPayment', async (req, res) => {
             let returnCount = await redisUtils.setCartProducts(`cart:${username}:${time}`, item)
             itemsInCart -= returnCount;
             item.count -= returnCount
-            refund += returnCount * (item.details.price * item.details.weight)
+            refund += returnCount * (item.price * item.weight)
             redisUtils.supplyDecStack(item.display, item.count)
-            redisUtils.setProductDetails(`cart:${username}:${time}`, item)
+            //redisUtils.setProductDetails(`cart:${username}:${time}`, item)
         }        
         Logger.write(req, config.userNewOrderLog)
 
         cart.amount -= refund;
-        cart.count = itemsInCart
+        cart.count = itemsInCart;
         redisUtils.setCartDetails(`cart:${username}:${time}`,cart, time)
         
         res.send(200)
@@ -42,6 +42,8 @@ router.post('/getPayments', async (req, res) => {
         await redisUtils.checkAuthentication(req.body.username, req.body.password)
 
         let payments = await redisUtils.getPayments(req.body.username);
+        
+        debugger;
         payments.sort(utils.sortByPaymentDate);
         Logger.write(req, config.paymentLog)
         res.send(payments)
